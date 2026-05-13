@@ -1,0 +1,5 @@
+{
+  "name": "Remix: Microanimation component builder",
+  "description": "A Notion-inspired workspace for generating, refining, and copying beautiful web micro-interactions using Gemini.",
+  "requestFramePermissions": []
+}
