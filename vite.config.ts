@@ -17,7 +17,7 @@ export default defineConfig({
         enabled: true
       },
       workbox: {
-        globIgnores: ['landing.html', 'landing.tsx', 'LandingPage.tsx'],
+        // No ignores needed anymore as we consolidated into index.tsx
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
