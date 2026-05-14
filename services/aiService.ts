@@ -180,21 +180,67 @@ export const getModel = (aiConfig: AIProviderConfig) => {
 // ---------------------------------------------------------------------------
 
 export const extractJSON = (raw: string): string => {
+  // 1. Try markdown blocks first
   const jsonBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (jsonBlockMatch && jsonBlockMatch[1]) return jsonBlockMatch[1].trim();
+  
+  // 2. Try finding the first '{' and the last '}'
   const start = raw.indexOf('{');
+  if (start === -1) return raw.trim(); // No start brace found, return as is
+  
   const end = raw.lastIndexOf('}');
-  if (start !== -1 && end !== -1 && end > start) return raw.slice(start, end + 1).trim();
-  return raw.trim();
+  if (end !== -1 && end > start) {
+    return raw.slice(start, end + 1).trim();
+  }
+  
+  // 3. Truncated case: Starts with '{' but never closed
+  return raw.slice(start).trim();
 };
 
 export const repairJSON = (json: string): string => {
-  let repaired = json;
+  let repaired = json.trim();
+
+  // Handle common AI quirk: using backticks for long strings
   repaired = repaired.replace(/"(\w+)":\s*`([\s\S]*?)`/g, (match, key, content) => {
     const escaped = content.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
     return `"${key}": "${escaped}"`;
   });
-  return repaired.trim();
+
+  // Remove trailing commas before closing braces/brackets
+  repaired = repaired.replace(/,\s*([}\]])/g, '$1');
+
+  // Attempt to fix unclosed strings (common in truncation)
+  // If the last character is not a brace/bracket/quote/digit/bool, and we're inside a string
+  const lastOpenQuote = repaired.lastIndexOf('"');
+  const lastCloseQuote = repaired.lastIndexOf('"', lastOpenQuote - 1);
+  if (lastOpenQuote !== -1 && (lastOpenQuote > lastCloseQuote || lastCloseQuote === -1)) {
+    // Check if it's followed by a colon (meaning it's a key) or not
+    const textAfterQuote = repaired.slice(lastOpenQuote + 1);
+    if (!textAfterQuote.includes(':')) {
+       repaired += '"'; // Close the string
+    }
+  }
+
+  // Balance braces/brackets (extremely useful for truncated streams)
+  let braceCount = 0;
+  let bracketCount = 0;
+  let inString = false;
+  
+  for (let i = 0; i < repaired.length; i++) {
+    const char = repaired[i];
+    if (char === '"' && repaired[i-1] !== '\\') inString = !inString;
+    if (!inString) {
+      if (char === '{') braceCount++;
+      if (char === '}') braceCount--;
+      if (char === '[') bracketCount++;
+      if (char === ']') bracketCount--;
+    }
+  }
+
+  while (bracketCount > 0) { repaired += ']'; bracketCount--; }
+  while (braceCount > 0) { repaired += '}'; braceCount--; }
+
+  return repaired;
 };
 
 // ---------------------------------------------------------------------------

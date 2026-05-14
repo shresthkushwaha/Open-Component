@@ -8,7 +8,8 @@ interface StreamingStudioProps {
 
 // Greedily extract a string value from a key in partial JSON
 const extractPartialField = (raw: string, key: string): string => {
-  const pattern = new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)`, 's');
+  // Support both double quotes and backticks (which repairJSON handles later but we want it live)
+  const pattern = new RegExp(`"${key}"\\s*:\\s*(?:"|\`)?((?:[^"\`\\\\]|\\\\.)*)`, 's');
   const match = raw.match(pattern);
   return match ? match[1] : '';
 };
