@@ -360,9 +360,11 @@ export const aiService = {
 
     const cleaned = extractJSON(text);
     const repaired = repairJSON(cleaned);
-    console.log('🟡 [generateComponent] cleaned length:', cleaned.length);
-    console.log('🟡 [generateComponent] repaired (first 500 chars):', repaired.slice(0, 500));
-    return JSON.parse(repaired);
+    try {
+      return JSON.parse(repaired);
+    } catch (parseErr: any) {
+      throw new Error(`JSON_PARSE_FAIL: ${parseErr.message} | Last 200 chars: ${repaired.slice(-200)}`);
+    }
   },
 
   streamGenerateComponent: async (
@@ -397,9 +399,10 @@ export const aiService = {
 
     const cleaned = extractJSON(fullText);
     const repaired = repairJSON(cleaned);
-    console.log('🟡 [streamGenerate] raw length:', fullText.length);
-    console.log('🟡 [streamGenerate] cleaned (first 500):', cleaned.slice(0, 500));
-    console.log('🟡 [streamGenerate] repaired (last 500):', repaired.slice(-500));
-    return JSON.parse(repaired);
+    try {
+      return JSON.parse(repaired);
+    } catch (parseErr: any) {
+      throw new Error(`JSON_PARSE_FAIL: ${parseErr.message} | Raw length: ${fullText.length} | Last 300 chars of repaired: ${repaired.slice(-300)}`);
+    }
   }
 };
