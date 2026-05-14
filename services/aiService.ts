@@ -327,6 +327,7 @@ export const aiService = {
     const model = getModel(aiConfig);
     const { text } = await generateText({
       model,
+      maxTokens: 1000,
       system: DS_GENERATION_PROMPT,
       messages: [{ role: 'user', content: description }],
     });
@@ -348,6 +349,7 @@ export const aiService = {
 
     const { text } = await generateText({
       model,
+      maxTokens: 6000,
       system,
       messages: [{ 
         role: 'user', 
@@ -381,6 +383,7 @@ export const aiService = {
 
     const result = streamText({
       model,
+      maxTokens: 6000,
       system,
       messages: [{
         role: 'user',
