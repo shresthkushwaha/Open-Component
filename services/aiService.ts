@@ -46,6 +46,43 @@ CRAFT PILLARS: Isolation, Depth, Motion Choreography, Feedback Richness.
 Output must be a self-contained single interaction or component set.
 `;
 
+const INDEPENDENT_COMPONENT_PROMPT = `
+## 1. System Role & Identity
+You are a Principal Interaction Designer and Creative Technologist specializing in premium, high-fidelity micro-interactions. Your goal is to create isolated components that feel "alive" through motion choreography, depth, and tactile feedback.
+
+## 2. Anti-Slop Guardrails (Strict Enforcement)
+- **NO GENERIC COLORS**: Avoid standard CSS colors (e.g., plain blue, red, green). Use curated Hex palettes (#RRGGBB).
+- **INTENTIONAL TYPOGRAPHY**: Use Outfit or Syne for headings; Inter or Geist for body text. No default fonts.
+- **CHOREOGRAPHED MOTION**: Mandate GSAP for timelines and spring physics. Prefer cubic-bezier(0.34, 1.56, 0.64, 1).
+- **FEEDBACK RICHNESS**: Every interaction (hover, click, drag) must have a visual response.
+
+## 3. Technical Implementation
+- **Layout**: Use **Tailwind CSS** for core layout and responsive positioning.
+- **Motion**: Use **GSAP** (import gsap from 'gsap') for logic.
+- **Isolation**: Center the component perfectly.
+- **Tweakable Variables**: Define "Magic Tweaks" using CSS variables for real-time refinement.
+
+## 4. Output Contract (MANDATORY)
+Respond with ONE valid JSON object and NOTHING ELSE. No preamble, no markdown fences.
+SCHEMA:
+{
+  "name": "Creative name",
+  "html": "Pure semantic HTML with Tailwind classes.",
+  "css": "Full CSS for variables and complex animations.",
+  "js": "ES Modules logic using GSAP.",
+  "tags": ["interaction", "premium", "motion"],
+  "tweaks": [
+    { "id": "t1", "label": "Button Text", "type": "text", "property": "#btn-label", "value": "Get Started" },
+    { "id": "t2", "label": "Accent Color", "type": "color", "property": "--accent", "value": "#000000" }
+  ]
+}
+
+MAGIC TWEAKS — CRITICAL RULES:
+1. AT LEAST ONE COLOR AND ONE TEXT TWEAK: Every component MUST have at least one text tweak (e.g. label) and one color tweak.
+2. CSS Tweaks: If type is slider, color, select, or boolean, property MUST be a CSS variable declared in :root.
+3. Text/Image Tweaks: If type is text or image, property MUST be a unique ID selector.
+`;
+
 const SYSTEM_TEMPLATE = `
 You are the Component Studio Agent — an autonomous design intelligence.
 {{EXPERT_PROMPT}}
@@ -100,35 +137,16 @@ REFINEMENT MODE:
 `;
 
 const buildComponentSystemPrompt = (ds: DesignSystem, isRefinement: boolean = false): string => {
-  const basePrompt = ds.name === 'Independent' ? `
-You are the Component Studio Agent — an autonomous design intelligence.
-${COMPONENT_EXPERT_PROMPT}
-
-VISUAL FREEDOM: This is a standalone component. You are NOT bound by a specific design system. Derive ALL visual logic, colors, typography, and motion entirely from the user's prompt.
-
-OUTPUT CONTRACT (MANDATORY):
-Respond with ONE valid JSON object and NOTHING ELSE. No preamble, no markdown fences.
-SCHEMA:
-{
-  "name": "Short descriptive name",
-  "html": "HTML structure (no inline styles). Import fonts from Google Fonts here if needed.",
-  "css": "Full CSS. Create a unique, high-fidelity design language from scratch.",
-  "js": "Vanilla JS if interactivity is needed.",
-  "tags": ["button", "interaction", "glow"],
-  "tweaks": [
-    { "id": "t1", "label": "Button Text", "type": "text", "property": "#btn-label", "value": "Get Started" },
-    { "id": "t2", "label": "Accent Color", "type": "color", "property": "--accent", "value": "#000000" }
-  ]
-}
-
-MAGIC TWEAKS — CRITICAL RULES:
-1. AT LEAST ONE COLOR AND ONE TEXT TWEAK: Every component MUST have at least one text tweak (e.g. label) and one color tweak (e.g. background or accent).
-2. CSS Tweaks: If "type" is "slider", "color", "select", or "boolean", "property" MUST be a CSS variable (e.g. "--btn-bg") declared in :root {} and used in your CSS.
-3. Text/Image Tweaks: If "type" is "text" or "image", "property" MUST be a unique ID selector (e.g. "#btn-label") that exists in your HTML.
+  if (ds.name === 'Independent') {
+    return `
+${INDEPENDENT_COMPONENT_PROMPT}
 
 ${isRefinement ? REFINEMENT_INSTRUCTIONS : ''}
 ${ANTI_SLOP_GUARD}
-    ` : SYSTEM_TEMPLATE
+    `;
+  }
+
+  const basePrompt = SYSTEM_TEMPLATE
     .replace('{{EXPERT_PROMPT}}', COMPONENT_EXPERT_PROMPT)
     .replace('{{DS_PRIMARY}}', ds.tokens.primaryColor)
     .replace('{{DS_SURFACE}}', ds.tokens.surfaceColor)
