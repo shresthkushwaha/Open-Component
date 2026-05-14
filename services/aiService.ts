@@ -90,9 +90,17 @@ MAGIC TWEAKS — CRITICAL RULES:
 {{ANTI_SLOP_GUARD}}
 `;
 
-const buildComponentSystemPrompt = (ds: DesignSystem): string => {
-  if (ds.name === 'Independent') {
-    return `
+const REFINEMENT_INSTRUCTIONS = `
+REFINEMENT MODE:
+1. You are modifying an EXISTING component.
+2. Carefully analyze the provided CURRENT COMPONENT CONTEXT.
+3. Apply the user's requested changes while preserving the overall structure and logic of the original unless explicitly asked to rebuild.
+4. Maintain consistency with the current design tokens.
+5. ALWAYS output the COMPLETE updated JSON object (all fields: name, html, css, js, tags, tweaks).
+`;
+
+const buildComponentSystemPrompt = (ds: DesignSystem, isRefinement: boolean = false): string => {
+  const basePrompt = ds.name === 'Independent' ? `
 You are the Component Studio Agent — an autonomous design intelligence.
 ${COMPONENT_EXPERT_PROMPT}
 
@@ -118,11 +126,9 @@ MAGIC TWEAKS — CRITICAL RULES:
 2. CSS Tweaks: If "type" is "slider", "color", "select", or "boolean", "property" MUST be a CSS variable (e.g. "--btn-bg") declared in :root {} and used in your CSS.
 3. Text/Image Tweaks: If "type" is "text" or "image", "property" MUST be a unique ID selector (e.g. "#btn-label") that exists in your HTML.
 
+${isRefinement ? REFINEMENT_INSTRUCTIONS : ''}
 ${ANTI_SLOP_GUARD}
-    `;
-  }
-
-  return SYSTEM_TEMPLATE
+    ` : SYSTEM_TEMPLATE
     .replace('{{EXPERT_PROMPT}}', COMPONENT_EXPERT_PROMPT)
     .replace('{{DS_PRIMARY}}', ds.tokens.primaryColor)
     .replace('{{DS_SURFACE}}', ds.tokens.surfaceColor)
@@ -132,7 +138,9 @@ ${ANTI_SLOP_GUARD}
     .replace('{{DS_RADIUS}}', ds.tokens.radiusScale)
     .replace('{{DS_MOTION}}', ds.tokens.motionPreset)
     .replace('{{DS_INSTRUCTION}}', ds.systemPromptAddendum)
-    .replace('{{ANTI_SLOP_GUARD}}', ANTI_SLOP_GUARD);
+    .replace('{{ANTI_SLOP_GUARD}}', (isRefinement ? REFINEMENT_INSTRUCTIONS : '') + ANTI_SLOP_GUARD);
+
+    return basePrompt;
 };
 
 // ---------------------------------------------------------------------------
@@ -271,7 +279,7 @@ export const aiService = {
     image?: ImageAttachment
   ): Promise<GenerationResponse> => {
     const model = getModel(aiConfig);
-    const system = buildComponentSystemPrompt(designSystem);
+    const system = buildComponentSystemPrompt(designSystem, !!context);
     const userText = context ? `REFINEMENT REQUEST: ${prompt}\n\nCURRENT COMPONENT CONTEXT:\n${context}` : prompt;
 
     const { text } = await generateText({
@@ -299,7 +307,7 @@ export const aiService = {
     image?: ImageAttachment
   ): Promise<GenerationResponse> => {
     const model = getModel(aiConfig);
-    const system = buildComponentSystemPrompt(designSystem);
+    const system = buildComponentSystemPrompt(designSystem, !!context);
     const userText = context ? `REFINEMENT REQUEST: ${prompt}\n\nCURRENT COMPONENT CONTEXT:\n${context}` : prompt;
 
     const result = streamText({
