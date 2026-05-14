@@ -192,48 +192,79 @@ export const extractJSON = (raw: string): string => {
   const jsonBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (jsonBlockMatch && jsonBlockMatch[1]) return jsonBlockMatch[1].trim();
   
-  // 2. Try finding the first '{' and the last '}'
+  // 2. Try finding the first '{' 
   const start = raw.indexOf('{');
-  if (start === -1) return raw.trim(); // No start brace found, return as is
+  if (start === -1) return raw.trim(); 
   
-  const end = raw.lastIndexOf('}');
-  if (end !== -1 && end > start) {
-    return raw.slice(start, end + 1).trim();
+  // Find the last '}' that balances with the first '{'
+  let braceCount = 0;
+  let inString = false;
+  for (let i = start; i < raw.length; i++) {
+    const char = raw[i];
+    if (char === '"' && raw[i-1] !== '\\') inString = !inString;
+    if (!inString) {
+      if (char === '{') braceCount++;
+      if (char === '}') braceCount--;
+      if (braceCount === 0) {
+        return raw.slice(start, i + 1).trim();
+      }
+    }
   }
   
-  // 3. Truncated case: Starts with '{' but never closed
+  // 3. Truncated case: Starts with '{' but never closed correctly
   return raw.slice(start).trim();
 };
 
 export const repairJSON = (json: string): string => {
   let repaired = json.trim();
 
-  // Handle common AI quirk: using backticks for long strings
+  // 1. Strip comments (common in AI output)
+  repaired = repaired.replace(/\/\/.*/g, ''); // Single line comments
+  repaired = repaired.replace(/\/\*[\s\S]*?\*\//g, ''); // Multi line comments
+
+  // 2. Handle common AI quirk: using backticks for long strings
   repaired = repaired.replace(/"(\w+)":\s*`([\s\S]*?)`/g, (match, key, content) => {
     const escaped = content.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
     return `"${key}": "${escaped}"`;
   });
 
-  // Remove trailing commas before closing braces/brackets
+  // 3. Fix unquoted keys (e.g. { name: "val" } -> { "name": "val" })
+  repaired = repaired.replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
+
+  // 4. Escape literal newlines within strings (common failure point for JSON.parse)
+  // This is tricky; we only want to escape newlines inside double quotes.
+  let inString = false;
+  let result = '';
+  for (let i = 0; i < repaired.length; i++) {
+    const char = repaired[i];
+    if (char === '"' && repaired[i-1] !== '\\') inString = !inString;
+    if (inString && char === '\n') {
+      result += '\\n';
+    } else if (inString && char === '\r') {
+      // skip
+    } else {
+      result += char;
+    }
+  }
+  repaired = result;
+
+  // 5. Remove trailing commas before closing braces/brackets
   repaired = repaired.replace(/,\s*([}\]])/g, '$1');
 
-  // Attempt to fix unclosed strings (common in truncation)
-  // If the last character is not a brace/bracket/quote/digit/bool, and we're inside a string
+  // 6. Attempt to fix unclosed strings (common in truncation)
   const lastOpenQuote = repaired.lastIndexOf('"');
   const lastCloseQuote = repaired.lastIndexOf('"', lastOpenQuote - 1);
   if (lastOpenQuote !== -1 && (lastOpenQuote > lastCloseQuote || lastCloseQuote === -1)) {
-    // Check if it's followed by a colon (meaning it's a key) or not
     const textAfterQuote = repaired.slice(lastOpenQuote + 1);
     if (!textAfterQuote.includes(':')) {
-       repaired += '"'; // Close the string
+       repaired += '"'; 
     }
   }
 
-  // Balance braces/brackets (extremely useful for truncated streams)
+  // 7. Balance braces/brackets
   let braceCount = 0;
   let bracketCount = 0;
-  let inString = false;
-  
+  inString = false;
   for (let i = 0; i < repaired.length; i++) {
     const char = repaired[i];
     if (char === '"' && repaired[i-1] !== '\\') inString = !inString;
