@@ -23,9 +23,12 @@ interface ImageAttachment {
 const App: React.FC = () => {
   // State: View
   const [view, setView] = useState<'landing' | 'studio'>(() => {
-    // If we have an active file in storage, we might want to skip landing?
-    // But user asked for landing page to come first.
-    return 'landing';
+    // Check if launched as PWA or via direct link
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPwa = urlParams.get('pwa') === 'true' || 
+                  window.matchMedia('(display-mode: standalone)').matches;
+    
+    return isPwa ? 'studio' : 'landing';
   });
 
   // State: Data
