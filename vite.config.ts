@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
-  base: '/Open-Component/',
+  base: '/',
   build: {
     outDir: 'dist',
   },
@@ -28,7 +28,7 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         start_url: 'index.html',
-        scope: '/Open-Component/',
+        scope: '/',
         icons: [
           {
             src: 'pwa-192x192.png',
