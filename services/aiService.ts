@@ -316,6 +316,40 @@ export const repairJSON = (json: string): string => {
 };
 
 // ---------------------------------------------------------------------------
+// FALLBACK FIELD EXTRACTOR
+// If JSON.parse fails even after repair, extract fields individually via regex.
+// ---------------------------------------------------------------------------
+
+const extractField = (raw: string, key: string): string => {
+  // Match: "key": "value" — handles escaped characters inside the value
+  const re = new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\[\\s\\S])*)"`, 's');
+  const m = raw.match(re);
+  if (!m) return '';
+  return m[1]
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\');
+};
+
+const extractArrayField = (raw: string, key: string): any[] => {
+  const re = new RegExp(`"${key}"\\s*:\\s*(\\[[\\s\\S]*?\\])(?:\\s*[,}])`, 's');
+  const m = raw.match(re);
+  if (!m) return [];
+  try { return JSON.parse(m[1]); } catch { return []; }
+};
+
+const fallbackParse = (raw: string): any => {
+  const name = extractField(raw, 'name') || 'Generated Component';
+  const html = extractField(raw, 'html');
+  const css  = extractField(raw, 'css');
+  const js   = extractField(raw, 'js');
+  const tags  = extractArrayField(raw, 'tags');
+  const tweaks = extractArrayField(raw, 'tweaks');
+  return { name, html, css, js, tags, tweaks };
+};
+
+// ---------------------------------------------------------------------------
 // CORE SERVICE
 // ---------------------------------------------------------------------------
 
@@ -364,8 +398,9 @@ export const aiService = {
     const repaired = repairJSON(cleaned);
     try {
       return JSON.parse(repaired);
-    } catch (parseErr: any) {
-      throw new Error(`JSON_PARSE_FAIL: ${parseErr.message} | Last 200 chars: ${repaired.slice(-200)}`);
+    } catch {
+      console.warn('[generateComponent] JSON.parse failed, using fallback extractor on raw text');
+      return fallbackParse(text);
     }
   },
 
@@ -404,8 +439,9 @@ export const aiService = {
     const repaired = repairJSON(cleaned);
     try {
       return JSON.parse(repaired);
-    } catch (parseErr: any) {
-      throw new Error(`JSON_PARSE_FAIL: ${parseErr.message} | Raw length: ${fullText.length} | Last 300 chars of repaired: ${repaired.slice(-300)}`);
+    } catch {
+      console.warn('[streamGenerate] JSON.parse failed, using fallback extractor on raw text');
+      return fallbackParse(fullText);
     }
   }
 };
