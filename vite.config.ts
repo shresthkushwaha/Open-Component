@@ -4,13 +4,9 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
+  base: '/Open-Component/',
   build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
-        landing: path.resolve(__dirname, 'landing.html'),
-      },
-    },
+    outDir: 'dist',
   },
   plugins: [
     react(),
@@ -31,8 +27,8 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/index.html',
-        scope: '/',
+        start_url: 'index.html',
+        scope: '/Open-Component/',
         icons: [
           {
             src: 'pwa-192x192.png',

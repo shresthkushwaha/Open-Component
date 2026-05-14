@@ -13,6 +13,7 @@ import SettingsModal from './components/SettingsModal';
 import StreamingStudio from './components/StreamingStudio';
 import logo from './assets/logo.png';
 import { getStarterFile, getStarterComponents } from './utils/starterTemplate';
+import LandingPage from './LandingPage';
 
 interface ImageAttachment {
   data: string;
@@ -20,6 +21,13 @@ interface ImageAttachment {
 }
 
 const App: React.FC = () => {
+  // State: View
+  const [view, setView] = useState<'landing' | 'studio'>(() => {
+    // If we have an active file in storage, we might want to skip landing?
+    // But user asked for landing page to come first.
+    return 'landing';
+  });
+
   // State: Data
   const [files, setFiles] = useState<ComponentFile[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
@@ -345,19 +353,25 @@ const App: React.FC = () => {
     await handleGenerateComponent(refinement, context);
   };
 
+  if (view === 'landing') {
+    return <LandingPage onLaunch={() => setView('studio')} />;
+  }
+
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300 font-sans selection:bg-black/10 dark:selection:bg-white/20">
       
-      {/* Sidebar */}
       {/* Sidebar */}
       <aside 
         className={`${isSidebarOpen ? 'w-80' : 'w-0'} border-r border-[var(--hairline)] transition-all duration-300 overflow-hidden flex flex-col bg-[var(--canvas-soft)] z-20`}
       >
         <div className="p-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setView('landing')}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
             <img src={logo} alt="Logo" className="w-8 h-8 theme-logo" />
             <h1 className="text-[20px] font-medium display-serif tracking-tight text-[var(--ink)]">Open Component</h1>
-          </div>
+          </button>
           <button 
             onClick={() => setIsSidebarOpen(false)}
             className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
@@ -425,17 +439,16 @@ const App: React.FC = () => {
               </div>
             </div>
           </button>
-          <div 
-            onClick={() => window.location.href = '/landing.html#privacy'}
-            className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity cursor-pointer group"
+          <button 
+            onClick={() => setView('landing')}
+            className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity cursor-pointer group w-full text-left"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 transition-transform"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-[var(--muted)]">BYOK — Privacy & About</span>
-          </div>
+          </button>
         </div>
       </aside>
 
-      {/* Main Content */}
       {/* Main Content */}
       <main className="flex-1 flex flex-col relative overflow-hidden bg-[var(--canvas)]">
         {/* Atmospheric Background */}
@@ -455,9 +468,19 @@ const App: React.FC = () => {
                 <img src={logo} alt="Logo" className="w-8 h-8 theme-logo" />
               </button>
             )}
-            <h2 className="text-[20px] font-medium display-serif text-[var(--ink)]">
-              {activeFile?.name || 'Open Component'}
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-[20px] font-medium display-serif text-[var(--ink)]">
+                {activeFile?.name || 'Open Component'}
+              </h2>
+              {activeFile && activeFile.type === 'suite' && activeFile.designSystem && (
+                <button 
+                  onClick={() => setIsDesignSystemEditorOpen(true)}
+                  className="hover:scale-[1.02] active:scale-[0.98] transition-transform"
+                >
+                  <DesignSystemBadge designSystem={activeFile.designSystem} />
+                </button>
+              )}
+            </div>
           </div>
 
           <button 

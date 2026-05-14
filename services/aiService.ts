@@ -65,26 +65,27 @@ Respond with ONE valid JSON object and NOTHING ELSE. No preamble, no markdown fe
 SCHEMA:
 {
   "name": "Short descriptive name",
-  "html": "HTML structure (no inline styles). Import fonts from Google Fonts here if needed.",
-  "css": "Full CSS. You MUST use the design system tokens above where applicable.",
+  "html": "HTML structure (no inline styles). Use unique IDs for elements you want to tweak (e.g. <span id='btn-label'>Click Me</span>).",
+  "css": "Full CSS. Use the design system tokens above where applicable. For tweakable colors/sizes, use CSS variables in :root (e.g. --btn-bg: var(--color-primary);) and consume them.",
   "js": "Vanilla JS if interactivity is needed.",
-  "tags": ["button", "interaction", "glow"], // 2-4 descriptive tags
+  "tags": ["button", "interaction", "glow"],
   "tweaks": [
-    { "id": "t1", "label": "Corner Radius", "type": "slider", "property": "--radius", "min": 0, "max": 40, "value": 12, "unit": "px" },
-    { "id": "t2", "label": "Button Text", "type": "text", "property": "#btn-text", "value": "Get Started" },
-    { "id": "t3", "label": "Layout Direction", "type": "select", "property": "--layout-dir", "value": "row", "options": [{ "label": "Row", "value": "row" }, { "label": "Column", "value": "column" }] },
-    { "id": "t4", "label": "Show Badge", "type": "boolean", "property": "--badge-display", "value": true },
+    { "id": "t1", "label": "Button Text", "type": "text", "property": "#btn-label", "value": "Get Started" },
+    { "id": "t2", "label": "Background Color", "type": "color", "property": "--btn-bg", "value": "#b4f420" },
+    { "id": "t3", "label": "Border Radius", "type": "slider", "property": "--radius", "min": 0, "max": 40, "value": 12, "unit": "px" },
+    { "id": "t4", "label": "Layout Direction", "type": "select", "property": "--layout-dir", "value": "row", "options": [{ "label": "Row", "value": "row" }, { "label": "Column", "value": "column" }] },
     { "id": "t5", "label": "Hero Image", "type": "image", "property": "#hero-img", "value": "https://images.unsplash.com/photo-1" }
   ]
 }
 
 MAGIC TWEAKS — CRITICAL RULES:
-1. CSS Tweaks: If "type" is "slider", "color", "select", or "boolean", "property" MUST be a CSS variable (e.g. "--radius") declared in :root {} and consumed via var().
-2. Text/Image Tweaks: If "type" is "text" or "image", "property" MUST be a unique ID selector (e.g. "#btn-label" or "#hero-img") that exists in your HTML.
-3. Every tweakable value MUST be accessible via the "property" selector/variable.
-4. Slider tweaks MUST include a "unit" field (e.g. "px", "rem", "%", "deg").
-5. Select tweaks MUST include an "options" array with label/value pairs.
-6. Limit tweaks to 2–6 meaningful controls. Design consistency is paramount.
+1. AT LEAST ONE COLOR AND ONE TEXT TWEAK: Every component MUST have at least one text tweak (e.g. label) and one color tweak (e.g. background or accent).
+2. CSS Tweaks: If "type" is "slider", "color", "select", or "boolean", "property" MUST be a CSS variable (e.g. "--btn-bg") declared in :root {} and used in your CSS.
+3. Text/Image Tweaks: If "type" is "text" or "image", "property" MUST be a unique ID selector (e.g. "#btn-label") that exists in your HTML.
+4. Every tweakable value MUST be accessible via the "property" selector/variable.
+5. Slider tweaks MUST include a "unit" field (e.g. "px", "rem", "%").
+6. Select tweaks MUST include an "options" array.
+7. Limit tweaks to 3–6 meaningful controls.
 
 {{ANTI_SLOP_GUARD}}
 `;
@@ -107,9 +108,15 @@ SCHEMA:
   "js": "Vanilla JS if interactivity is needed.",
   "tags": ["button", "interaction", "glow"],
   "tweaks": [
-    { "id": "t1", "label": "Control Name", "type": "slider", "property": "--variable", "min": 0, "max": 100, "value": 50, "unit": "px" }
+    { "id": "t1", "label": "Button Text", "type": "text", "property": "#btn-label", "value": "Get Started" },
+    { "id": "t2", "label": "Accent Color", "type": "color", "property": "--accent", "value": "#000000" }
   ]
 }
+
+MAGIC TWEAKS — CRITICAL RULES:
+1. AT LEAST ONE COLOR AND ONE TEXT TWEAK: Every component MUST have at least one text tweak (e.g. label) and one color tweak (e.g. background or accent).
+2. CSS Tweaks: If "type" is "slider", "color", "select", or "boolean", "property" MUST be a CSS variable (e.g. "--btn-bg") declared in :root {} and used in your CSS.
+3. Text/Image Tweaks: If "type" is "text" or "image", "property" MUST be a unique ID selector (e.g. "#btn-label") that exists in your HTML.
 
 ${ANTI_SLOP_GUARD}
     `;

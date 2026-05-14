@@ -25,7 +25,6 @@ const FALLBACK_REGISTRY: ModelsRegistry = {
     id: 'google',
     name: 'Google Gemini',
     models: {
-      'gemini-3-flash': { id: 'gemini-3-flash', name: 'Gemini 3 Flash' },
       'gemini-1.5-pro-latest': { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro' },
       'gemini-1.5-flash-latest': { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash' },
     }
@@ -82,13 +81,17 @@ function mergeWithFallback(fetched: ModelsRegistry): ModelsRegistry {
   const merged = { ...FALLBACK_REGISTRY };
   
   Object.keys(fetched).forEach(providerId => {
+    // Filter out known broken models
+    const fetchedModels = { ...fetched[providerId].models };
+    delete fetchedModels['gemini-3-flash'];
+
     if (!merged[providerId]) {
-      merged[providerId] = fetched[providerId];
+      merged[providerId] = { ...fetched[providerId], models: fetchedModels };
     } else {
       // Merge models
       merged[providerId].models = {
         ...merged[providerId].models,
-        ...fetched[providerId].models
+        ...fetchedModels
       };
     }
   });

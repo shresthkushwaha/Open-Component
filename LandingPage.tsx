@@ -2,7 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { ShaderGradientCanvas, ShaderGradient } from 'shadergradient';
 import gsap from 'gsap';
 
-const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  onLaunch: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,15 +46,18 @@ const LandingPage: React.FC = () => {
           onClick={(e) => scrollToSection(e, 'home')}
           className="flex items-center gap-3 group"
         >
-          <img src="/pwa-192x192.png" alt="Logo" className="h-8 w-8 invert transition-transform group-hover:scale-110" />
+          <img src="pwa-192x192.png" alt="Logo" className="h-8 w-8 invert transition-transform group-hover:scale-110" />
           <span className="text-xl font-light display-serif tracking-tight">Open Component</span>
         </a>
         <div className="flex items-center gap-8 text-sm font-medium text-white/50">
           <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="hover:text-white transition-colors">Features</a>
           <a href="#privacy" onClick={(e) => scrollToSection(e, 'privacy')} className="hover:text-white transition-colors">Privacy</a>
-          <a href="/" className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-[#a7e5d3] transition-all">
+          <button 
+            onClick={onLaunch}
+            className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-[#a7e5d3] transition-all font-semibold"
+          >
             Launch Studio
-          </a>
+          </button>
         </div>
       </nav>
 
