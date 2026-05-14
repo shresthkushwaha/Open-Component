@@ -216,70 +216,103 @@ export const extractJSON = (raw: string): string => {
 };
 
 export const repairJSON = (json: string): string => {
-  let repaired = json.trim();
+  let s = json.trim();
 
-  // 1. Strip comments (common in AI output)
-  repaired = repaired.replace(/\/\/.*/g, ''); // Single line comments
-  repaired = repaired.replace(/\/\*[\s\S]*?\*\//g, ''); // Multi line comments
-
-  // 2. Handle common AI quirk: using backticks for long strings
-  repaired = repaired.replace(/"(\w+)":\s*`([\s\S]*?)`/g, (match, key, content) => {
-    const escaped = content.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
-    return `"${key}": "${escaped}"`;
-  });
-
-  // 3. Fix unquoted keys (e.g. { name: "val" } -> { "name": "val" })
-  repaired = repaired.replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
-
-  // 4. Escape literal newlines within strings (common failure point for JSON.parse)
-  // This is tricky; we only want to escape newlines inside double quotes.
-  let inString = false;
-  let result = '';
-  for (let i = 0; i < repaired.length; i++) {
-    const char = repaired[i];
-    if (char === '"' && repaired[i-1] !== '\\') inString = !inString;
-    if (inString && char === '\n') {
-      result += '\\n';
-    } else if (inString && char === '\r') {
-      // skip
-    } else {
-      result += char;
+  // ── Step 1: Replace backtick-quoted values with double-quoted strings ──
+  // Handles: "key": `...multi-line...`
+  // We do this character-by-character to handle nested backticks safely.
+  {
+    let out = '';
+    let i = 0;
+    while (i < s.length) {
+      // Look for pattern: ": ` (a JSON value that is a backtick string)
+      if (s[i] === ':' && /\s/.test(s[i + 1] || '') && s.indexOf('`', i) !== -1) {
+        // Peek ahead past whitespace
+        let j = i + 1;
+        while (j < s.length && /\s/.test(s[j])) j++;
+        if (s[j] === '`') {
+          // Found a backtick value — find its closing backtick
+          let end = s.indexOf('`', j + 1);
+          if (end === -1) end = s.length; // unclosed, take to end
+          const content = s.slice(j + 1, end)
+            .replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\r/g, '');
+          out += ': "' + content + '"';
+          i = end + 1;
+          continue;
+        }
+      }
+      out += s[i];
+      i++;
     }
-  }
-  repaired = result;
-
-  // 5. Remove trailing commas before closing braces/brackets
-  repaired = repaired.replace(/,\s*([}\]])/g, '$1');
-
-  // 6. Attempt to fix unclosed strings (common in truncation)
-  const lastOpenQuote = repaired.lastIndexOf('"');
-  const lastCloseQuote = repaired.lastIndexOf('"', lastOpenQuote - 1);
-  if (lastOpenQuote !== -1 && (lastOpenQuote > lastCloseQuote || lastCloseQuote === -1)) {
-    const textAfterQuote = repaired.slice(lastOpenQuote + 1);
-    if (!textAfterQuote.includes(':')) {
-       repaired += '"'; 
-    }
+    s = out;
   }
 
-  // 7. Balance braces/brackets
-  let braceCount = 0;
-  let bracketCount = 0;
-  inString = false;
-  for (let i = 0; i < repaired.length; i++) {
-    const char = repaired[i];
-    if (char === '"' && repaired[i-1] !== '\\') inString = !inString;
-    if (!inString) {
-      if (char === '{') braceCount++;
-      if (char === '}') braceCount--;
-      if (char === '[') bracketCount++;
-      if (char === ']') bracketCount--;
+  // ── Step 2: Strip JS comments (only outside strings) ──
+  {
+    let out = '';
+    let inStr = false;
+    let i = 0;
+    while (i < s.length) {
+      const ch = s[i];
+      if (ch === '"' && s[i - 1] !== '\\') inStr = !inStr;
+      if (!inStr) {
+        // Single-line comment
+        if (ch === '/' && s[i + 1] === '/') {
+          while (i < s.length && s[i] !== '\n') i++;
+          continue;
+        }
+        // Multi-line comment
+        if (ch === '/' && s[i + 1] === '*') {
+          i += 2;
+          while (i < s.length && !(s[i] === '*' && s[i + 1] === '/')) i++;
+          i += 2;
+          continue;
+        }
+      }
+      out += ch;
+      i++;
     }
+    s = out;
   }
 
-  while (bracketCount > 0) { repaired += ']'; bracketCount--; }
-  while (braceCount > 0) { repaired += '}'; braceCount--; }
+  // ── Step 3: Escape unescaped literal newlines inside strings ──
+  {
+    let out = '';
+    let inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '"' && s[i - 1] !== '\\') inStr = !inStr;
+      if (inStr && ch === '\n') { out += '\\n'; continue; }
+      if (inStr && ch === '\r') continue; // strip CR
+      out += ch;
+    }
+    s = out;
+  }
 
-  return repaired;
+  // ── Step 4: Remove trailing commas ──
+  s = s.replace(/,(\s*[}\]])/g, '$1');
+
+  // ── Step 5: Balance unclosed braces/brackets ──
+  {
+    let braces = 0, brackets = 0, inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '"' && s[i - 1] !== '\\') inStr = !inStr;
+      if (!inStr) {
+        if (ch === '{') braces++;
+        if (ch === '}') braces--;
+        if (ch === '[') brackets++;
+        if (ch === ']') brackets--;
+      }
+    }
+    while (brackets > 0) { s += ']'; brackets--; }
+    while (braces > 0) { s += '}'; braces--; }
+  }
+
+  return s;
 };
 
 // ---------------------------------------------------------------------------
