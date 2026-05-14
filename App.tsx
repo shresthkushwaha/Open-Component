@@ -321,13 +321,13 @@ const App: React.FC = () => {
       setActiveComponentId(newComp.id);
       setSelectedImage(null);
     } catch (e: any) {
-      console.error("Generation Error:", e);
-      alert("Parsing Error: The AI response was malformed or truncated. I've kept the raw output visible in the preview overlay so you can salvage the code.");
+      console.group('🔴 Generation Parse Error');
+      console.error('Error:', e?.message || e);
+      console.error('Stack:', e?.stack);
+      console.groupEnd();
+      alert(`Generation Error: ${e?.message || 'Unknown error'}. Check the browser console (F12) for the raw output.`);
     } finally {
       setIsGenerating(false);
-      // Note: we don't clear streamingRaw/streamingPrompt here anymore
-      // This allows the user to see what was generated even if it failed to parse.
-      // They can close the StreamingStudio manually.
     }
   };
 

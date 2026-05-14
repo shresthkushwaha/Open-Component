@@ -326,7 +326,10 @@ export const aiService = {
     });
 
     const cleaned = extractJSON(text);
-    return JSON.parse(repairJSON(cleaned));
+    const repaired = repairJSON(cleaned);
+    console.log('🟡 [generateComponent] cleaned length:', cleaned.length);
+    console.log('🟡 [generateComponent] repaired (first 500 chars):', repaired.slice(0, 500));
+    return JSON.parse(repaired);
   },
 
   streamGenerateComponent: async (
@@ -360,6 +363,10 @@ export const aiService = {
     }
 
     const cleaned = extractJSON(fullText);
-    return JSON.parse(repairJSON(cleaned));
+    const repaired = repairJSON(cleaned);
+    console.log('🟡 [streamGenerate] raw length:', fullText.length);
+    console.log('🟡 [streamGenerate] cleaned (first 500):', cleaned.slice(0, 500));
+    console.log('🟡 [streamGenerate] repaired (last 500):', repaired.slice(-500));
+    return JSON.parse(repaired);
   }
 };
