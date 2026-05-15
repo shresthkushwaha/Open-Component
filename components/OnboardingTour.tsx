@@ -62,6 +62,7 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, height: 0 });
   const step = STEPS[currentStep];
+  const [realPosition, setRealPosition] = useState(step.position);
 
   useLayoutEffect(() => {
     const updateCoords = () => {
@@ -74,6 +75,15 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
           width: rect.width,
           height: rect.height
         });
+
+        // Collision detection
+        if (step.position === 'top' && rect.top < 280) {
+          setRealPosition('bottom');
+        } else if (step.position === 'bottom' && (window.innerHeight - rect.bottom) < 280) {
+          setRealPosition('top');
+        } else {
+          setRealPosition(step.position);
+        }
       } else if (step.position === 'center') {
         setCoords({
           top: window.innerHeight / 2,
@@ -81,6 +91,7 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
           width: 0,
           height: 0
         });
+        setRealPosition('center');
       }
     };
 
@@ -103,6 +114,21 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
     }
   };
 
+  // Helper to get safe left position
+  const getSafeLeft = () => {
+    if (realPosition === 'center') return '50%';
+    let left = 0;
+    if (realPosition === 'right') left = coords.left + coords.width + 20;
+    else if (realPosition === 'left') left = coords.left - 340;
+    else left = coords.left + coords.width / 2;
+
+    // Constrain to viewport
+    const minPadding = 20;
+    if (left < minPadding) return `${minPadding}px`;
+    if (left > window.innerWidth - 340) return `${window.innerWidth - 340}px`;
+    return `${left}px`;
+  };
+
   return createPortal(
     <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden inter-ui">
       {/* Dimmed Overlay with Hole */}
@@ -118,11 +144,11 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
 
       {/* Tooltip Card */}
       <div 
-        className="absolute bg-white dark:bg-[#111] border border-[var(--hairline-strong)] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] p-6 w-[320px] transition-all duration-500 pointer-events-auto flex flex-col gap-4"
+        className="absolute bg-white dark:bg-[#111] border border-[var(--hairline-strong)] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] p-6 w-[320px] max-w-[calc(100vw-40px)] transition-all duration-500 pointer-events-auto flex flex-col gap-4"
         style={{
-          top: step.position === 'center' ? '50%' : (step.position === 'bottom' ? coords.top + coords.height + 20 : (step.position === 'top' ? coords.top - 20 : coords.top + coords.height/2)),
-          left: step.position === 'center' ? '50%' : (step.position === 'right' ? coords.left + coords.width + 20 : (step.position === 'left' ? coords.left - 340 : coords.left + coords.width/2)),
-          transform: step.position === 'center' ? 'translate(-50%, -50%)' : (step.position === 'top' ? 'translate(-50%, -100%)' : (step.position === 'bottom' ? 'translate(-50%, 0)' : 'translate(0, -50%)')),
+          top: realPosition === 'center' ? '50%' : (realPosition === 'bottom' ? coords.top + coords.height + 20 : (realPosition === 'top' ? coords.top - 20 : coords.top + coords.height/2)),
+          left: getSafeLeft(),
+          transform: realPosition === 'center' ? 'translate(-50%, -50%)' : (realPosition === 'top' ? 'translate(-50%, -100%)' : (realPosition === 'bottom' ? 'translate(-50%, 0)' : (realPosition === 'left' ? 'translate(0, -50%)' : 'translate(0, -50%)'))),
           opacity: coords.width || step.position === 'center' ? 1 : 0
         }}
       >
@@ -168,13 +194,13 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
         <div 
           className="absolute w-4 h-4 bg-white dark:bg-[#111] border-l border-t border-[var(--hairline-strong)] rotate-45"
           style={{
-            display: step.position === 'center' ? 'none' : 'block',
-            top: step.position === 'bottom' ? '-8px' : (step.position === 'top' ? 'auto' : '50%'),
-            bottom: step.position === 'top' ? '-8px' : 'auto',
-            left: step.position === 'right' ? '-8px' : (step.position === 'left' ? 'auto' : '50%'),
-            right: step.position === 'left' ? '-8px' : 'auto',
-            marginTop: (step.position === 'left' || step.position === 'right') ? '-8px' : 0,
-            marginLeft: (step.position === 'top' || step.position === 'bottom') ? '-8px' : 0
+            display: realPosition === 'center' ? 'none' : 'block',
+            top: realPosition === 'bottom' ? '-8px' : (realPosition === 'top' ? 'auto' : '50%'),
+            bottom: realPosition === 'top' ? '-8px' : 'auto',
+            left: realPosition === 'right' ? '-8px' : (realPosition === 'left' ? 'auto' : '50%'),
+            right: realPosition === 'left' ? '-8px' : 'auto',
+            marginTop: (realPosition === 'left' || realPosition === 'right') ? '-8px' : 0,
+            marginLeft: (realPosition === 'top' || realPosition === 'bottom') ? '-8px' : 0
           }}
         />
       </div>
