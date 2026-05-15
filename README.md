@@ -17,12 +17,9 @@
 
 ## 🎬 The Demo
 
-<video src="https://github.com/shresthkushwaha/Open-Component/raw/main/public/demo.mp4" width="100%" controls></video>
 
-> [!NOTE]
-> *Note: If you are viewing this on GitHub, the video above shows the "Quietly Editorial" workflow in action—from design system orchestration to real-time "Magic Tweaks."*
+https://github.com/user-attachments/assets/1fb8d24e-dd9a-4493-a01f-f3d82de6d502
 
----
 
 ## 💎 Why Open Component?
 
