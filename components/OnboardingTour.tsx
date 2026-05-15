@@ -78,10 +78,10 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
 
       // Smart positioning / collision detection
       let pos = step.position;
-      if (pos === 'top' && rect.top < 300) pos = 'bottom';
-      if (pos === 'bottom' && (window.innerHeight - rect.bottom) < 300) pos = 'top';
-      if (pos === 'left' && rect.left < 340) pos = 'right';
-      if (pos === 'right' && (window.innerWidth - rect.right) < 340) pos = 'left';
+      if (pos === 'top' && rect.top < 320) pos = 'bottom';
+      if (pos === 'bottom' && (window.innerHeight - rect.bottom) < 320) pos = 'top';
+      if (pos === 'left' && rect.left < 360) pos = 'right';
+      if (pos === 'right' && (window.innerWidth - rect.right) < 360) pos = 'left';
       
       setRealPosition(pos);
     } else if (step.position === 'center') {
@@ -160,15 +160,23 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
         break;
     }
 
+    // Constraints & Containment
+    const tooltipHeight = 280; // Estimated max height
+    const minPadding = 20;
+
     // Horizontal containment
-    const minLeft = tooltipWidth / 2 + 20;
-    const maxLeft = window.innerWidth - tooltipWidth / 2 - 20;
+    const minLeft = realPosition === 'left' ? tooltipWidth + minPadding : (realPosition === 'right' ? minPadding : tooltipWidth / 2 + minPadding);
+    const maxLeft = window.innerWidth - (realPosition === 'right' ? tooltipWidth + minPadding : (realPosition === 'left' ? minPadding : tooltipWidth / 2 + minPadding));
     
-    // For top/bottom, adjust transform if left is constrained
-    if (realPosition === 'top' || realPosition === 'bottom') {
-       if (left < minLeft) left = minLeft;
-       if (left > maxLeft) left = maxLeft;
-    }
+    if (left < minLeft) left = minLeft;
+    if (left > maxLeft) left = maxLeft;
+
+    // Vertical containment
+    const minTop = realPosition === 'top' ? tooltipHeight + minPadding : (realPosition === 'bottom' ? minPadding : tooltipHeight / 2 + minPadding);
+    const maxTop = window.innerHeight - (realPosition === 'bottom' ? tooltipHeight + minPadding : (realPosition === 'top' ? minPadding : tooltipHeight / 2 + minPadding));
+
+    if (top < minTop) top = minTop;
+    if (top > maxTop) top = maxTop;
 
     return {
       top: `${top}px`,
