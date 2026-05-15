@@ -72,9 +72,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
               left: 0,
               width: '100%',
               height: '100%',
+              pointerEvents: 'none',
             }}
           >
             <ShaderGradient
+              control="query"
               animate="on"
               axesHelper="off"
               bgColor1="#000000"
