@@ -699,50 +699,6 @@ items().forEach(item => {
     ]
   },
   {
-    y: pos.y - 48,
-    rotation: gsap.utils.clamp(-20, 20, vel.x),
-    scaleY: isSqueezing ? 0.7 : (1 / (1 + Math.min(Math.sqrt(dx*dx + dy*dy) / 1000, 0.2)))
-  });
-});
-
-gsap.to(tail, { duration: 1.2, attr: { d: "M85 65 Q 105 50 88 30" }, repeat: -1, yoyo: true, ease: "sine.inOut" });
-
-const blink = () => {
-  gsap.to(eyes, { opacity: 1, duration: 0.1, onComplete: () => gsap.to(eyes, { opacity: 0, duration: 0.1, delay: 0.1 }) });
-  setTimeout(blink, Math.random() * 3000 + 2000);
-};
-blink();
-
-window.addEventListener('mousedown', () => {
-  isSqueezing = true;
-  gsap.to(cursor, { scaleX: 1.3, scaleY: 0.7, duration: 0.2, ease: "back.out(2)" });
-  const treat = document.createElement('div');
-  treat.className = 'treat-particle text-2xl';
-  treat.innerText = ['🧶', '🐟', '✨', '🥛'][Math.floor(Math.random() * 4)];
-  treat.style.left = \`\${pos.x - 12}px\`;
-  treat.style.top = \`\${pos.y + 20}px\`;
-  document.body.appendChild(treat);
-  gsap.to(treat, { y: "+=80", rotation: Math.random() * 360, opacity: 0, duration: 1, ease: "power2.in", onComplete: () => treat.remove() });
-});
-
-window.addEventListener('mouseup', () => {
-  isSqueezing = false;
-  gsap.to(cursor, { scaleX: 1, scaleY: 1, duration: 0.6, ease: "elastic.out(1, 0.3)" });
-});
-
-document.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('mouseenter', () => gsap.to(bodySvg, { fill: "#a18cd1", duration: 0.3 }));
-  btn.addEventListener('mouseleave', () => gsap.to(bodySvg, { fill: "var(--cat-color)", duration: 0.3 }));
-});`,
-    timestamp: Date.now(),
-    tags: ['cursor', 'animation', 'gsap'],
-    tweaks: [
-      { id: 't1', label: 'Title Text', type: 'text', property: '#title-text', value: 'THE KINETIC NEBULA' },
-      { id: 't2', label: 'Cat Primary', type: 'color', property: '--cat-color', value: '#f8f9fa' },
-      { id: 't3', label: 'Cat Accent', type: 'color', property: '--cat-accent', value: '#ff80a8' }
-    ]
-  },
-  {
     id: 'starter-comp-4',
     fileId: STARTER_PROJECT_ID,
     name: 'Ethereal Flip Card',
@@ -872,4 +828,3 @@ document.querySelectorAll('button').forEach(btn => {
     ]
   }
 ];
-
