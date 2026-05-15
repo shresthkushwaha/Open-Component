@@ -11,10 +11,10 @@ export const getStarterFile = (): ComponentFile => ({
     id: 'ds-featured',
     name: 'Featured',
     tokens: {
-      primaryColor: '#000000',
+      primaryColor: '#a7e5d3', // Mint Accent
       surfaceColor: '#ffffff',
-      textColor: '#000000',
-      fontDisplay: 'Inter',
+      textColor: '#0f172a',    // Deep Slate
+      fontDisplay: 'Outfit',
       fontBody: 'Inter',
       radiusScale: 'soft',
       motionPreset: 'fluid'
@@ -30,10 +30,14 @@ export const getStarterComponents = (): Component[] => [
     prompt: 'Create a minimal, kinetic kanban board with drag and drop interactions.',
     html: `
 <div class="kanban-container">
+  <div class="kanban-header">
+    <h1 id="board-title">Product Roadmap</h1>
+    <p id="board-desc">Strategic development and feature tracking</p>
+  </div>
   <div class="kanban-board">
     <div class="kanban-column" data-status="todo">
       <div class="column-header">
-        <h2 id="col-1-title">To Do</h2>
+        <h2 id="col-1-title">Discovery</h2>
         <span class="badge">3</span>
       </div>
       <div class="card-list">
@@ -65,7 +69,7 @@ export const getStarterComponents = (): Component[] => [
     </div>
     <div class="kanban-column" data-status="progress">
       <div class="column-header">
-        <h2 id="col-2-title">In Progress</h2>
+        <h2 id="col-2-title">Development</h2>
         <span class="badge">1</span>
       </div>
       <div class="card-list">
@@ -81,7 +85,7 @@ export const getStarterComponents = (): Component[] => [
     </div>
     <div class="kanban-column" data-status="done">
       <div class="column-header">
-        <h2 id="col-3-title">Done</h2>
+        <h2 id="col-3-title">Shipped</h2>
         <span class="badge">0</span>
       </div>
       <div class="card-list"></div>
@@ -90,22 +94,44 @@ export const getStarterComponents = (): Component[] => [
 </div>`,
     css: `
 :root {
-  --bg-color: #f8fafc;
-  --column-bg: #f1f5f9;
+  --bg-color: #ffffff;
+  --column-bg: #f8fafb;
   --card-bg: #ffffff;
-  --accent-color: #6366f1;
-  --text-main: #1e293b;
+  --accent-color: #a7e5d3;
+  --text-main: #0f172a;
   --text-muted: #64748b;
-  --card-radius: 12px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-  --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --card-radius: 16px;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 32px 64px -12px rgba(15, 23, 42, 0.12);
 }
 
 .kanban-container {
   width: 100%;
   max-width: 1200px;
-  padding: 40px;
+  padding: 60px 40px;
+  background: var(--bg-color);
+  font-family: var(--font-body);
+}
+
+.kanban-header {
+  margin-bottom: 40px;
+}
+
+.kanban-header h1 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.kanban-header p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
 }
 
 .kanban-board {
@@ -117,42 +143,42 @@ export const getStarterComponents = (): Component[] => [
 
 .kanban-column {
   background: var(--column-bg);
-  border-radius: 16px;
-  padding: 16px;
-  min-height: 400px;
-  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
-  border: 2px solid transparent;
+  border-radius: 24px;
+  padding: 20px;
+  min-height: 500px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .kanban-column.drag-over {
-  background: #e2e8f0;
-  border: 2px dashed var(--accent-color);
-  transform: translateY(-2px);
+  background: #f1f5f9;
+  border-color: var(--accent-color);
+  transform: translateY(-4px);
 }
 
 .column-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 0 4px;
+  margin-bottom: 24px;
+  padding: 0 8px;
 }
 
 .column-header h2 {
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-main);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 .badge {
-  background: white;
-  color: var(--text-muted);
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  background: var(--accent-color);
+  color: var(--text-main);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
@@ -160,20 +186,20 @@ export const getStarterComponents = (): Component[] => [
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   min-height: 100px;
 }
 
 .kanban-card {
   background: var(--card-bg);
-  padding: 16px;
+  padding: 20px;
   border-radius: var(--card-radius);
   box-shadow: var(--shadow-md);
   cursor: grab;
-  transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   user-select: none;
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid rgba(15, 23, 42, 0.04);
 }
 
 .kanban-card:active {
@@ -181,52 +207,58 @@ export const getStarterComponents = (): Component[] => [
 }
 
 .kanban-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.01);
   box-shadow: var(--shadow-lg);
+  border-color: var(--accent-color);
 }
 
 .kanban-card.dragging {
-  opacity: 0.4;
+  opacity: 0.5;
   transform: scale(0.95) rotate(2deg);
 }
 
 .card-tag {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--accent-color);
-  background: rgba(99, 102, 241, 0.1);
-  padding: 2px 8px;
-  border-radius: 4px;
+  color: var(--text-main);
+  background: var(--accent-color);
+  padding: 4px 10px;
+  border-radius: 6px;
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .kanban-card p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-main);
-  line-height: 1.5;
-  margin-bottom: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-weight: 450;
 }
 
 .card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-top: 1px solid rgba(15, 23, 42, 0.04);
+  padding-top: 16px;
 }
 
 .avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #cbd5e1;
+  width: 28px;
+  height: 28px;
+  border-radius: 100px;
+  background: #e2e8f0;
   border: 2px solid white;
 }
 
 .priority {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 @media (max-width: 900px) {
@@ -243,8 +275,6 @@ const updateBadges = () => {
     const badge = col.querySelector('.badge');
     const count = col.querySelectorAll('.kanban-card').length;
     badge.textContent = count;
-    badge.style.transform = 'scale(1.2)';
-    setTimeout(() => badge.style.transform = 'scale(1)', 200);
   });
 };
 
@@ -300,12 +330,11 @@ function getDragAfterElement(container, y) {
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }`,
     timestamp: Date.now(),
-    tags: ['interaction', 'kanban', 'gsap'],
+    tags: ['interaction', 'kanban', 'editorial'],
     tweaks: [
-      { id: 't1', label: 'To Do Title', type: 'text', property: '#col-1-title', value: 'To Do' },
-      { id: 't2', label: 'In Progress Title', type: 'text', property: '#col-2-title', value: 'In Progress' },
-      { id: 't3', label: 'Done Title', type: 'text', property: '#col-3-title', value: 'Done' },
-      { id: 't4', label: 'Accent Color', type: 'color', property: '--accent-color', value: '#6366f1' }
+      { id: 't1', label: 'Main Title', type: 'text', property: '#board-title', value: 'Product Roadmap' },
+      { id: 't2', label: 'Description', type: 'text', property: '#board-desc', value: 'Strategic development and feature tracking' },
+      { id: 't3', label: 'Accent Color', type: 'color', property: '--accent-color', value: '#a7e5d3' }
     ]
   },
   {
@@ -318,28 +347,28 @@ function getDragAfterElement(container, y) {
   <div class="cp-modal" id="palette-modal">
     <div class="cp-search-container">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input type="text" id="cp-input" placeholder="Search commands..." autocomplete="off">
+      <input type="text" id="cp-input" placeholder="What can I help you find?" autocomplete="off">
       <div class="cp-esc-hint">ESC</div>
     </div>
 
     <div class="cp-results" id="cp-results">
       <div class="cp-section">
-        <div class="cp-section-label" id="recent-label">Recent</div>
+        <div class="cp-section-label" id="recent-label">Activity</div>
         <div class="cp-item active" data-cmd="dashboard">
           <div class="cp-item-icon">📊</div>
           <div class="cp-item-content">
-            <div class="cp-item-title">Go to Dashboard</div>
-            <div class="cp-item-desc">View your project analytics</div>
+            <div class="cp-item-title">Visual Analytics</div>
+            <div class="cp-item-desc">Review your interaction metrics</div>
           </div>
-          <div class="cp-item-shortcut">G D</div>
+          <div class="cp-item-shortcut">⌘ A</div>
         </div>
         <div class="cp-item" data-cmd="settings">
           <div class="cp-item-icon">⚙️</div>
           <div class="cp-item-content">
-            <div class="cp-item-title">Account Settings</div>
-            <div class="cp-item-desc">Manage preferences and security</div>
+            <div class="cp-item-title">System Configuration</div>
+            <div class="cp-item-desc">Adjust performance and UI tokens</div>
           </div>
-          <div class="cp-item-shortcut">⌘ ,</div>
+          <div class="cp-item-shortcut">⌘ S</div>
         </div>
       </div>
 
@@ -348,91 +377,98 @@ function getDragAfterElement(container, y) {
         <div class="cp-item" data-cmd="new-project">
           <div class="cp-item-icon">➕</div>
           <div class="cp-item-content">
-            <div class="cp-item-title">Create New Project</div>
-            <div class="cp-item-desc">Start a fresh workspace</div>
+            <div class="cp-item-title">New Workspace</div>
+            <div class="cp-item-desc">Initialize a clean environment</div>
           </div>
           <div class="cp-item-shortcut">⌘ N</div>
         </div>
         <div class="cp-item" data-cmd="theme">
           <div class="cp-item-icon">🌓</div>
           <div class="cp-item-content">
-            <div class="cp-item-title">Toggle Dark Mode</div>
-            <div class="cp-item-desc">Switch between light and dark</div>
+            <div class="cp-item-title">Toggle Appearance</div>
+            <div class="cp-item-desc">Switch between light and dark modes</div>
           </div>
           <div class="cp-item-shortcut">⌘ T</div>
-        </div>
-        <div class="cp-item" data-cmd="search-files">
-          <div class="cp-item-icon">📂</div>
-          <div class="cp-item-content">
-            <div class="cp-item-title">Search Files</div>
-            <div class="cp-item-desc">Locate files across folders</div>
-          </div>
-          <div class="cp-item-shortcut">⌘ P</div>
         </div>
       </div>
     </div>
 
     <div class="cp-footer">
-      <div class="cp-footer-item"><span>↑↓</span> Navigate</div>
-      <div class="cp-footer-item"><span>↵</span> Select</div>
+      <div class="cp-footer-item"><span>↑↓</span> Browse</div>
+      <div class="cp-footer-item"><span>↵</span> Execute</div>
       <div class="cp-footer-item"><span>K</span> Close</div>
     </div>
   </div>
 </div>
 
-<div class="cp-trigger-hint">
-  Press <kbd>⌘</kbd> + <kbd>K</kbd> to open
+<div class="cp-trigger-container">
+  <div class="cp-trigger-hint">
+    Press <kbd>⌘</kbd> + <kbd>K</kbd> to activate command palette
+  </div>
 </div>`,
     css: `
 :root {
-  --cp-bg: #0a0a0c;
-  --cp-border: #222226;
-  --cp-accent: #8b5cf6;
-  --cp-text-main: #ffffff;
-  --cp-text-muted: #88888e;
-  --cp-item-hover: #16161a;
-  --cp-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5);
-  --cp-radius: 14px;
+  --cp-bg: #ffffff;
+  --cp-border: rgba(15, 23, 42, 0.08);
+  --cp-accent: #a7e5d3;
+  --cp-text-main: #0f172a;
+  --cp-text-muted: #64748b;
+  --cp-item-hover: #f8fafb;
+  --cp-shadow: 0 32px 128px -12px rgba(15, 23, 42, 0.15);
+  --cp-radius: 20px;
+  --font-main: 'Outfit', sans-serif;
+}
+
+.cp-trigger-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 }
 
 .cp-trigger-hint {
   color: var(--cp-text-muted);
-  font-size: 0.9rem;
-  padding: 12px 20px;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  padding: 16px 28px;
   border: 1px solid var(--cp-border);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  animation: cp-pulse 2s infinite ease-in-out;
+  border-radius: 100px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-@keyframes cp-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.cp-trigger-hint:hover {
+  transform: translateY(-2px);
+  border-color: var(--cp-accent);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
 .cp-trigger-hint kbd {
-  background: var(--cp-border);
+  background: #f1f5f9;
   color: var(--cp-text-main);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 0.8rem;
-  margin: 0 2px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  margin: 0 4px;
+  font-weight: 600;
 }
 
 .cp-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 15vh;
+  padding-top: 12vh;
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cp-overlay.visible {
@@ -442,14 +478,15 @@ function getDragAfterElement(container, y) {
 
 .cp-modal {
   width: 100%;
-  max-width: 640px;
+  max-width: 680px;
   background: var(--cp-bg);
   border: 1px solid var(--cp-border);
   border-radius: var(--cp-radius);
   box-shadow: var(--cp-shadow);
-  transform: translateY(20px) scale(0.98);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(30px) scale(0.95);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  font-family: var(--font-main);
 }
 
 .cp-overlay.visible .cp-modal {
@@ -459,15 +496,15 @@ function getDragAfterElement(container, y) {
 .cp-search-container {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
+  padding: 24px 28px;
   border-bottom: 1px solid var(--cp-border);
-  gap: 12px;
+  gap: 16px;
 }
 
 .search-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--cp-text-muted);
+  width: 24px;
+  height: 24px;
+  color: var(--cp-accent);
 }
 
 #cp-input {
@@ -477,65 +514,66 @@ function getDragAfterElement(container, y) {
   outline: none;
   color: var(--cp-text-main);
   font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 300;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .cp-esc-hint {
   font-size: 0.7rem;
   color: var(--cp-text-muted);
-  padding: 4px 6px;
+  padding: 4px 8px;
   border: 1px solid var(--cp-border);
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-radius: 6px;
+  font-weight: 700;
 }
 
 .cp-results {
-  max-height: 400px;
+  max-height: 480px;
   overflow-y: auto;
-  padding: 12px 8px;
+  padding: 16px;
 }
 
 .cp-section-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--cp-text-muted);
-  padding: 8px 12px;
+  padding: 12px 16px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .cp-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 2px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 4px;
 }
 
 .cp-item.active {
   background: var(--cp-item-hover);
-  box-shadow: inset 0 0 0 1px var(--cp-border);
+  transform: translateX(4px);
 }
 
 .cp-item-icon {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px;
-  font-size: 1.1rem;
+  background: #f8fafb;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
 }
 
 .cp-item.active .cp-item-icon {
   background: var(--cp-accent);
-  color: white;
+  transform: scale(1.1);
 }
 
 .cp-item-content {
@@ -543,54 +581,57 @@ function getDragAfterElement(container, y) {
 }
 
 .cp-item-title {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: var(--cp-text-main);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .cp-item-desc {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--cp-text-muted);
   margin-top: 2px;
 }
 
 .cp-item-shortcut {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--cp-text-muted);
-  background: rgba(255, 255, 255, 0.05);
+  background: #f1f5f9;
   padding: 4px 8px;
-  border-radius: 4px;
-  opacity: 0.5;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .cp-item.active .cp-item-shortcut {
-  opacity: 1;
-  color: var(--cp-accent);
+  background: white;
+  color: var(--cp-text-main);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .cp-footer {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: 16px 28px;
   border-top: 1px solid var(--cp-border);
-  gap: 20px;
-  background: rgba(0, 0, 0, 0.2);
+  gap: 28px;
+  background: #fcfcfd;
 }
 
 .cp-footer-item {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--cp-text-muted);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  font-weight: 500;
 }
 
 .cp-footer-item span {
   color: var(--cp-text-main);
-  font-weight: 600;
-  background: var(--cp-border);
-  padding: 2px 4px;
-  border-radius: 3px;
+  font-weight: 700;
+  background: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--cp-border);
 }`,
     js: `
 const overlay = document.getElementById('palette-overlay');
@@ -601,7 +642,6 @@ function openPalette() {
   overlay.classList.add('visible');
   input.value = '';
   input.focus();
-  filterItems('');
 }
 
 function closePalette() {
@@ -650,41 +690,11 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-input.addEventListener('input', (e) => {
-  filterItems(e.target.value);
-});
-
-function filterItems(query) {
-  const q = query.toLowerCase();
-  let firstVisible = null;
-
-  items().forEach(item => {
-    const title = item.querySelector('.cp-item-title').innerText.toLowerCase();
-    const desc = item.querySelector('.cp-item-desc').innerText.toLowerCase();
-    
-    if (title.includes(q) || desc.includes(q)) {
-      item.style.display = 'flex';
-      item.classList.remove('active');
-      if (!firstVisible) firstVisible = item;
-    } else {
-      item.style.display = 'none';
-    }
-  });
-
-  if (firstVisible) firstVisible.classList.add('active');
-
-  document.querySelectorAll('.cp-section').forEach(section => {
-    const hasVisible = Array.from(section.querySelectorAll('.cp-item')).some(i => i.style.display !== 'none');
-    section.style.display = hasVisible ? 'block' : 'none';
-  });
-}
-
 overlay.addEventListener('click', (e) => {
   if (e.target === overlay) closePalette();
 });
 
 items().forEach(item => {
-  item.addEventListener('click', () => closePalette());
   item.addEventListener('mouseenter', () => {
     items().forEach(i => i.classList.remove('active'));
     item.classList.add('active');
@@ -693,9 +703,9 @@ items().forEach(item => {
     timestamp: Date.now(),
     tags: ['ui', 'palette', 'premium'],
     tweaks: [
-      { id: 't1', label: 'Search Placeholder', type: 'text', property: '#cp-input', value: 'Search commands...' },
-      { id: 't2', label: 'Accent Color', type: 'color', property: '--cp-accent', value: '#8b5cf6' },
-      { id: 't3', label: 'Background', type: 'color', property: '--cp-bg', value: '#0a0a0c' }
+      { id: 't1', label: 'Search Placeholder', type: 'text', property: '#cp-input', value: 'What can I help you find?' },
+      { id: 't2', label: 'Accent Color', type: 'color', property: '--cp-accent', value: '#a7e5d3' },
+      { id: 't3', label: 'Surface', type: 'color', property: '--cp-bg', value: '#ffffff' }
     ]
   },
   {
@@ -708,16 +718,16 @@ items().forEach(item => {
   <div class="card-container">
     <div class="card-inner">
       <div class="card-face card-front">
+        <div class="card-glass-shine"></div>
         <div class="card-top">
-          <svg class="chip" width="40" height="32" viewBox="0 0 40 32" fill="none">
-            <rect width="40" height="32" rx="4" fill="#e0e0e0"/>
-            <path d="M0 11H12V21H0V11Z" stroke="#a0a0a0" stroke-width="0.5"/>
-            <path d="M28 11H40V21H28V11Z" stroke="#a0a0a0" stroke-width="0.5"/>
-            <path d="M12 0V11M12 21V32M28 0V11M28 21V32" stroke="#a0a0a0" stroke-width="0.5"/>
-            <rect x="12" y="11" width="16" height="10" rx="1" stroke="#a0a0a0" stroke-width="0.5"/>
+          <svg class="chip" width="44" height="36" viewBox="0 0 40 32" fill="none">
+            <rect width="40" height="32" rx="6" fill="#f8fafc" opacity="0.9"/>
+            <path d="M0 11H12V21H0V11Z" stroke="#0f172a" stroke-width="0.5" opacity="0.1"/>
+            <path d="M28 11H40V21H28V11Z" stroke="#0f172a" stroke-width="0.5" opacity="0.1"/>
+            <path d="M12 0V11M12 21V32M28 0V11M28 21V32" stroke="#0f172a" stroke-width="0.5" opacity="0.1"/>
           </svg>
           <div class="visa-logo">
-            <svg viewBox="0 0 100 32" width="60"><path d="M36.1 2.3h-6.1c-1.1 0-2.1.6-2.6 1.6l-9.1 21.6h6.4l1.3-3.6h7.8l.7 3.6h5.7L36.1 2.3zm-5 14.5l2.7-7.4 1.5 7.4h-4.2zm-21.2-14.5l-6.1 14.9-.6-3.1c-1-3.5-4.2-7.3-7.8-9.1l-.1-.1v19h6.4V9.6l9.8 15.9h6.4L23.4 2.3h-6.5l-.1-.1z" fill="currentColor"/></svg>
+            <span id="card-brand-name">ETHEREAL</span>
           </div>
         </div>
         <div class="card-middle">
@@ -725,23 +735,23 @@ items().forEach(item => {
         </div>
         <div class="card-bottom">
           <div class="info-group">
-            <span class="label">Card Holder</span>
+            <span class="label">Member</span>
             <span id="card-name" class="value">ALEXANDER RIVERA</span>
           </div>
           <div class="info-group">
-            <span class="label">Expires</span>
-            <span id="card-expiry" class="value">12/26</span>
+            <span class="label">Valid Thru</span>
+            <span id="card-expiry" class="value">12 / 28</span>
           </div>
         </div>
       </div>
       <div class="card-face card-back">
         <div class="magnetic-stripe"></div>
         <div class="signature-area">
-          <div class="signature-strip"><div class="sig-lines"></div></div>
+          <div class="signature-strip"></div>
           <div id="card-cvv" class="cvv-display">421</div>
         </div>
         <div class="back-content">
-          <p class="disclaimer">This card is property of the issuing bank. Subject to terms and conditions.</p>
+          <p class="disclaimer">Issued by Open Component Systems. This asset is strictly digital and strictly premium.</p>
         </div>
       </div>
     </div>
@@ -749,22 +759,26 @@ items().forEach(item => {
 </div>`,
     css: `
 :root {
-  --radius: 16px;
-  --card-bg: #000000;
+  --radius: 24px;
+  --card-bg: #0f172a;
+  --card-accent: #a7e5d3;
   --card-text: #ffffff;
+  --font-main: 'Outfit', sans-serif;
 }
 
 .component-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: 500px;
+  background: white;
+  font-family: var(--font-main);
 }
 
 .card-container {
-  width: 400px;
-  height: 250px;
-  perspective: 1200px;
+  width: 440px;
+  height: 270px;
+  perspective: 2000px;
   cursor: pointer;
 }
 
@@ -772,14 +786,12 @@ items().forEach(item => {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   transform-style: preserve-3d;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  border-radius: var(--radius);
 }
 
 .card-container:hover .card-inner {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) rotateX(5deg);
 }
 
 .card-face {
@@ -788,43 +800,135 @@ items().forEach(item => {
   height: 100%;
   backface-visibility: hidden;
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background: var(--card-bg);
   color: var(--card-text);
-  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 40px 80px -15px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-face::after {
-  content: '';
+.card-glass-shine {
   position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.04;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.05) 48%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 52%,
+    transparent 55%
+  );
+  transition: all 0.8s ease;
   pointer-events: none;
 }
 
-.card-back { transform: rotateY(180deg); padding: 0; }
-.chip { opacity: 0.9; }
-.number-display { font-family: monospace; font-size: 22px; letter-spacing: 2px; margin-top: 10px; }
-.label { font-size: 8px; text-transform: uppercase; opacity: 0.6; }
-.value { font-size: 14px; font-weight: 500; }
-.magnetic-stripe { width: 100%; height: 45px; background: #1a1a1a; margin-top: 24px; }
-.signature-area { margin: 20px 24px; display: flex; align-items: center; gap: 12px; }
-.signature-strip { flex-grow: 1; height: 36px; background: #f0f0f0; border-radius: 4px; }
-.cvv-display { font-family: monospace; background: white; color: black; padding: 4px 8px; }
-.back-content { padding: 24px; margin-top: auto; }
-.disclaimer { font-size: 7px; opacity: 0.4; }`,
+.card-container:hover .card-glass-shine {
+  top: -50%;
+  left: -50%;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#card-brand-name {
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  font-size: 0.8rem;
+  color: var(--card-accent);
+}
+
+.number-display {
+  font-family: 'Courier New', monospace;
+  font-size: 1.75rem;
+  letter-spacing: 0.15em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  padding: 0;
+  background: #0a101e;
+}
+
+.magnetic-stripe {
+  width: 100%;
+  height: 56px;
+  background: #000;
+  margin-top: 32px;
+}
+
+.signature-area {
+  margin: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.signature-strip {
+  flex-grow: 1;
+  height: 44px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+}
+
+.cvv-display {
+  font-family: monospace;
+  background: white;
+  color: #0f172a;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.back-content {
+  padding: 0 32px 32px;
+}
+
+.disclaimer {
+  font-size: 0.6rem;
+  opacity: 0.3;
+  line-height: 1.5;
+}`,
     js: ``,
     timestamp: Date.now(),
     tags: ['3d', 'interaction', 'card'],
     tweaks: [
       { id: 't1', label: 'Card Name', type: 'text', property: '#card-name', value: 'ALEXANDER RIVERA' },
-      { id: 't2', label: 'Card Number', type: 'text', property: '#card-number', value: '•••• •••• •••• 8842' },
-      { id: 't3', label: 'Expiry Date', type: 'text', property: '#card-expiry', value: '12/26' },
-      { id: 't4', label: 'Card Color', type: 'color', property: '--card-bg', value: '#000000' }
+      { id: 't2', label: 'Brand Name', type: 'text', property: '#card-brand-name', value: 'ETHEREAL' },
+      { id: 't3', label: 'Accent Color', type: 'color', property: '--card-accent', value: '#a7e5d3' },
+      { id: 't4', label: 'Card Color', type: 'color', property: '--card-bg', value: '#0f172a' }
     ]
   }
 ];

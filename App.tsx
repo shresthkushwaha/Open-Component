@@ -153,6 +153,24 @@ const App: React.FC = () => {
             setComponents(prev => prev.filter(c => c.id !== 'starter-comp-3'));
           }
         }
+
+        // Migration: Update Featured Collection to new high-fidelity design system
+        const featuredFile = allFiles.find(f => f.id === STARTER_PROJECT_ID);
+        if (featuredFile && featuredFile.designSystem.tokens.primaryColor !== '#a7e5d3') {
+          const newStarterFile = getStarterFile();
+          const newStarterComponents = getStarterComponents();
+          
+          await dbService.saveFile(newStarterFile);
+          for (const comp of newStarterComponents) {
+            await dbService.saveComponent(comp);
+          }
+          
+          // Refresh local state list
+          allFiles = allFiles.map(f => f.id === STARTER_PROJECT_ID ? newStarterFile : f);
+          if (activeFileId === STARTER_PROJECT_ID) {
+            setComponents(newStarterComponents);
+          }
+        }
       }
 
       setFiles(allFiles);
