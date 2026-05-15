@@ -13,6 +13,7 @@ import SettingsModal from './components/SettingsModal';
 import StreamingStudio from './components/StreamingStudio';
 import logo from './assets/logo.png';
 import { getStarterFile, getStarterComponents } from './utils/starterTemplate';
+import OnboardingTour from './components/OnboardingTour';
 import LandingPage from './LandingPage';
 
 interface ImageAttachment {
@@ -38,6 +39,7 @@ const App: React.FC = () => {
   
   // State: UI
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showTour, setShowTour] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewFileModalOpen, setIsNewFileModalOpen] = useState(false);
   const [isDesignSystemEditorOpen, setIsDesignSystemEditorOpen] = useState(false);
@@ -145,6 +147,15 @@ const App: React.FC = () => {
     };
     loadData();
   }, []);
+
+  // Trigger onboarding tour
+  useEffect(() => {
+    if (view === 'studio' && !localStorage.getItem('onboarding_completed')) {
+      // Delay slightly to ensure layout is ready
+      const timer = setTimeout(() => setShowTour(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [view]);
 
   // Load components when active file changes
   useEffect(() => {
@@ -380,6 +391,7 @@ const App: React.FC = () => {
       
       {/* Sidebar */}
       <aside 
+        id="sidebar-container"
         className={`${isSidebarOpen ? 'w-80' : 'w-0'} border-r border-[var(--hairline)] transition-all duration-300 overflow-hidden flex flex-col bg-[var(--canvas-soft)] z-20`}
       >
         <div className="p-8 flex items-center justify-between">
@@ -441,6 +453,7 @@ const App: React.FC = () => {
 
         <div className="p-6 border-t border-[var(--hairline)]">
           <button 
+            id="settings-trigger-btn"
             onClick={() => setIsSettingsOpen(true)}
             className="flex items-center gap-3 w-full p-2 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] rounded-xl transition-colors mb-4 text-left"
           >
@@ -492,6 +505,7 @@ const App: React.FC = () => {
               </h2>
               {activeFile && activeFile.type === 'suite' && activeFile.designSystem && (
                 <button 
+                  id="ds-badge-btn"
                   onClick={() => setIsDesignSystemEditorOpen(true)}
                   className="hover:scale-[1.02] active:scale-[0.98] transition-transform"
                 >
@@ -528,7 +542,7 @@ const App: React.FC = () => {
                     </p>
                   </div>
                 ) : (
-                  <section className="space-y-8">
+                  <section id="gallery-section" className="space-y-8">
                     <div className="flex items-center justify-between px-2">
                       <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-30">Studio History</h2>
                       <span className="text-[10px] font-bold opacity-20">{components.length} Versions</span>
@@ -563,7 +577,7 @@ const App: React.FC = () => {
           )}
 
           {activeFile && (
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
+            <div id="prompt-input-container" className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
               <div className="bg-white dark:bg-[#0c0c0c] border border-[var(--hairline-strong)] rounded-full p-1.5 flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] group transition-all duration-300 focus-within:shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
                 <label className="p-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] rounded-full cursor-pointer transition-colors text-[var(--muted)] hover:text-[var(--ink)]">
                   <ImageIcon />
@@ -654,6 +668,14 @@ const App: React.FC = () => {
         config={config}
         setConfig={setConfig}
       />
+      {showTour && (
+        <OnboardingTour 
+          onComplete={() => {
+            setShowTour(false);
+            localStorage.setItem('onboarding_completed', 'true');
+          }} 
+        />
+      )}
     </div>
   );
 };
