@@ -12,7 +12,7 @@ import DesignSystemEditorModal from './components/DesignSystemEditorModal';
 import SettingsModal from './components/SettingsModal';
 import StreamingStudio from './components/StreamingStudio';
 import logo from './assets/logo.png';
-import { getStarterFile, getStarterComponents } from './utils/starterTemplate';
+import { getStarterFile, getStarterComponents, STARTER_PROJECT_ID } from './utils/starterTemplate';
 import OnboardingTour from './components/OnboardingTour';
 import LandingPage from './LandingPage';
 
@@ -132,6 +132,16 @@ const App: React.FC = () => {
         }
         
         allFiles = [starterFile];
+      } else {
+        // Migration: Remove Nebula Kitty if it was previously seeded
+        const starterComponents = await dbService.getComponentsForFile(STARTER_PROJECT_ID);
+        if (starterComponents.some(c => c.id === 'starter-comp-3')) {
+          await dbService.deleteComponent('starter-comp-3');
+          // Update state if we are currently viewing it
+          if (activeFileId === STARTER_PROJECT_ID) {
+            setComponents(prev => prev.filter(c => c.id !== 'starter-comp-3'));
+          }
+        }
       }
 
       setFiles(allFiles);
