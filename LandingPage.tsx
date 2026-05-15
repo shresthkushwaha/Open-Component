@@ -161,16 +161,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
   return (
     <div ref={containerRef} className="min-h-screen bg-black text-white font-sans selection:bg-[#a7e5d3]/30">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center bg-transparent border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 px-6 md:px-8 py-4 md:py-6 flex justify-between items-center bg-black/50 backdrop-blur-md md:bg-transparent border-b border-white/5">
         <a
           href="#home"
           onClick={(e) => scrollToSection(e, 'home')}
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-2 md:gap-3 group"
         >
-          <img src="pwa-192x192.png" alt="Logo" className="h-8 w-8 invert transition-transform group-hover:scale-110" />
-          <span className="text-xl font-light display-serif tracking-tight transition-colors group-hover:text-[#a7e5d3]">Open Component</span>
+          <img src="pwa-192x192.png" alt="Logo" className="h-6 w-6 md:h-8 md:h-8 invert transition-transform group-hover:scale-110" />
+          <span className="text-lg md:text-xl font-light display-serif tracking-tight transition-colors group-hover:text-[#a7e5d3]">Open Component</span>
         </a>
-        <div className="flex items-center gap-8 text-sm font-medium">
+        
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-8 text-sm font-medium">
           <a 
             href="#features" 
             onClick={(e) => scrollToSection(e, 'features')} 
@@ -204,6 +206,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
             className="px-6 py-2.5 bg-white text-black rounded-full hover:bg-[#a7e5d3] transition-all font-semibold"
           >
             Launch Studio
+          </button>
+        </div>
+
+        {/* Mobile Launch Button (Always Visible) */}
+        <div className="flex lg:hidden items-center gap-4">
+          <button 
+            onClick={onLaunch}
+            className="px-4 py-2 bg-white text-black rounded-full text-xs font-bold"
+          >
+            Launch
           </button>
         </div>
       </nav>
@@ -294,23 +306,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
           <div className="reveal inline-block px-4 py-1.5 mb-8 rounded-full border border-white/10 text-[12px] font-semibold uppercase tracking-[0.1em] text-[#a7e5d3]/80">
             Truly Open • Forever Free • Local First
           </div>
-          <h1 className="reveal text-6xl md:text-8xl font-light display-serif leading-[1.1] tracking-tight mb-8">
+          <h1 className="reveal text-4xl md:text-8xl font-light display-serif leading-[1.2] md:leading-[1.1] tracking-tight mb-8">
             The premier AI studio that belongs to <span className="italic text-[#a7e5d3]">you.</span>
           </h1>
-          <p className="reveal text-xl text-white/60 max-w-2xl mx-auto leading-relaxed mb-12">
+          <p className="reveal text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed mb-12">
             Stop paying for cloud-locked design tools. Open Component is a professional-grade, open-source workspace for high-fidelity UI generation—completely private and powered by your own keys.
           </p>
-          <div className="reveal flex justify-center gap-6 mt-4">
+          <div className="reveal flex flex-col md:flex-row justify-center gap-4 md:gap-6 mt-4">
             <button 
               onClick={onLaunch}
-              className="px-10 py-4 bg-[#a7e5d3] text-black rounded-full hover:bg-white transition-all font-bold text-lg shadow-[0_0_40px_rgba(167,229,211,0.2)]"
+              className="px-8 md:px-10 py-4 bg-[#a7e5d3] text-black rounded-full hover:bg-white transition-all font-bold text-base md:text-lg shadow-[0_0_40px_rgba(167,229,211,0.2)]"
             >
               Start Designing for Free
             </button>
             <a 
               href="#features"
               onClick={(e) => scrollToSection(e, 'features')}
-              className="px-10 py-4 border border-white/10 rounded-full hover:bg-white/5 transition-all font-medium text-lg"
+              className="px-8 md:px-10 py-4 border border-white/10 rounded-full hover:bg-white/5 transition-all font-medium text-base md:text-lg"
             >
               Learn More
             </a>
@@ -319,10 +331,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="relative z-10 py-40 px-8 bg-black">
+      <section id="features" className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black">
         <div className="max-w-7xl mx-auto">
-          <h2 className="reveal text-4xl md:text-5xl font-light display-serif mb-24 text-center">Engineered for Craft.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <h2 className="reveal text-3xl md:text-5xl font-light display-serif mb-12 md:mb-24 text-center">Engineered for Craft.</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
             {[
               {
                 title: "BYOK Architecture",
@@ -337,9 +349,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
                 description: "Refine CSS and logic in real-time. Patch generated code without full reloads for a seamless creative flow."
               }
             ].map((feature, i) => (
-              <div key={i} className="reveal p-10 border border-white/5 hover:border-white/20 transition-all bg-[#050505]">
-                <h3 className="text-2xl font-medium mb-5 text-white">{feature.title}</h3>
-                <p className="text-white/60 leading-relaxed text-lg font-light">{feature.description}</p>
+              <div key={i} className="reveal p-8 md:p-10 border border-white/5 hover:border-white/20 transition-all bg-[#050505]">
+                <h3 className="text-xl md:text-2xl font-medium mb-4 md:mb-5 text-white">{feature.title}</h3>
+                <p className="text-white/60 leading-relaxed text-base md:text-lg font-light">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -347,17 +359,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Workflow Section */}
-      <section id="workflow-section" className="relative z-10 py-40 px-8 bg-black border-t border-white/5 overflow-hidden">
+      <section id="workflow-section" className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black border-t border-white/5 overflow-hidden">
         {/* Animated Background Text */}
-        <div className="bg-text-parallax absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-bold text-white/[0.02] whitespace-nowrap pointer-events-none display-serif italic">
+        <div className="bg-text-parallax absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] md:text-[20vw] font-bold text-white/[0.02] whitespace-nowrap pointer-events-none display-serif italic">
           Magic Workflow
         </div>
         
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-            <div className="space-y-12">
-              <h2 className="reveal text-4xl md:text-5xl font-light display-serif leading-tight">A workflow that feels like <span className="italic text-[#a7e5d3]">magic.</span></h2>
-              <div className="space-y-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
+            <div className="space-y-8 md:space-y-12">
+              <h2 className="reveal text-3xl md:text-5xl font-light display-serif leading-tight">A workflow that feels like <span className="italic text-[#a7e5d3]">magic.</span></h2>
+              <div className="space-y-8 md:space-y-10">
                 {[
                   {
                     step: "01",
@@ -375,11 +387,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
                     desc: "Use Magic Tweaks to adjust spacing, colors, and logic without leaving the preview. Pure, real-time creative flow."
                   }
                 ].map((item, i) => (
-                  <div key={i} className="reveal flex gap-8 group">
-                    <span className="text-2xl font-bold text-white/20 group-hover:text-[#a7e5d3] transition-colors">{item.step}</span>
+                  <div key={i} className="reveal flex gap-6 md:gap-8 group">
+                    <span className="text-xl md:text-2xl font-bold text-white/20 group-hover:text-[#a7e5d3] transition-colors">{item.step}</span>
                     <div className="space-y-2">
-                      <h4 className="text-xl font-medium text-white">{item.title}</h4>
-                      <p className="text-white/50 leading-relaxed font-light text-lg">{item.desc}</p>
+                      <h4 className="text-lg md:text-xl font-medium text-white">{item.title}</h4>
+                      <p className="text-white/50 leading-relaxed font-light text-base md:text-lg">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -417,16 +429,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Model Support Section */}
-      <section className="relative z-10 py-40 px-8 bg-black border-t border-white/5">
+      <section className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black border-t border-white/5">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="reveal text-4xl md:text-5xl font-light display-serif mb-16 leading-tight">Your keys. Your choice.</h2>
-          <p className="reveal text-white/50 text-xl font-light mb-24 max-w-2xl mx-auto">
+          <h2 className="reveal text-3xl md:text-5xl font-light display-serif mb-8 md:mb-16 leading-tight">Your keys. Your choice.</h2>
+          <p className="reveal text-white/50 text-lg md:text-xl font-light mb-12 md:mb-24 max-w-2xl mx-auto">
             Switch between providers on the fly. Compare outputs, optimize costs, and use the best model for the task at hand.
           </p>
-          <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-8 opacity-40">
+          <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 opacity-40">
             {['Google Gemini', 'Anthropic Claude', 'OpenAI GPT-4', 'Llama 3'].map((model, i) => (
-              <div key={i} className="py-8 border border-white/10 hover:border-white/30 transition-all hover:bg-white/5 grayscale hover:grayscale-0">
-                <span className="text-sm font-bold uppercase tracking-widest text-white/80">{model}</span>
+              <div key={i} className="py-6 md:py-8 border border-white/10 hover:border-white/30 transition-all hover:bg-white/5 grayscale hover:grayscale-0">
+                <span className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-white/80">{model}</span>
               </div>
             ))}
           </div>
@@ -434,15 +446,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* API Key Guide Section */}
-      <section id="guide" className="relative z-10 py-40 px-8 bg-black border-t border-white/5">
+      <section id="guide" className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-24 gap-6 md:gap-8">
             <div className="max-w-2xl">
-              <div className="reveal inline-block px-4 py-1.5 mb-6 rounded-full border border-white/10 text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">
+              <div className="reveal inline-block px-4 py-1.5 mb-4 md:mb-6 rounded-full border border-white/10 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">
                 Setup Guide
               </div>
-              <h2 className="reveal text-4xl md:text-5xl font-light display-serif leading-tight">How to get started <br /><span className="italic text-[#a7e5d3]">for free.</span></h2>
-              <p className="reveal text-white/50 text-lg font-light mt-6">
+              <h2 className="reveal text-3xl md:text-5xl font-light display-serif leading-tight">How to get started <br /><span className="italic text-[#a7e5d3]">for free.</span></h2>
+              <p className="reveal text-white/50 text-base md:text-lg font-light mt-4 md:mt-6">
                 Most top-tier AI providers offer generous free tiers for developers. You can get started today without spending a dime.
               </p>
             </div>
@@ -503,21 +515,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
             ))}
           </div>
 
-          <div className="reveal mt-16 p-8 border border-white/5 bg-gradient-to-r from-[#050505] to-transparent rounded-2xl flex flex-col md:flex-row items-center gap-8">
+          <div className="reveal mt-12 md:mt-16 p-6 md:p-8 border border-white/5 bg-[#050505] rounded-2xl flex flex-col md:flex-row items-center gap-6 md:gap-8">
             <div className="flex -space-x-4">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="w-12 h-12 rounded-full border-2 border-black bg-white/5 flex items-center justify-center overflow-hidden">
-                   <div className="w-6 h-6 bg-[#a7e5d3]/20 rounded-full" />
+                <div key={n} className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-black bg-white/5 flex items-center justify-center overflow-hidden">
+                   <div className="w-5 h-5 md:w-6 md:h-6 bg-[#a7e5d3]/20 rounded-full" />
                 </div>
               ))}
             </div>
             <div className="text-center md:text-left flex-1">
                <h5 className="text-white font-medium mb-1">Ready to build?</h5>
-               <p className="text-white/40 text-sm">Once you have your key, paste it in the <span className="text-white font-medium">Settings</span> menu inside the Studio. It's stored locally and never leaves your browser.</p>
+               <p className="text-white/40 text-xs md:text-sm">Once you have your key, paste it in the <span className="text-white font-medium">Settings</span> menu inside the Studio. It's stored locally and never leaves your browser.</p>
             </div>
             <button 
               onClick={onLaunch}
-              className="px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-[#a7e5d3] transition-all"
+              className="w-full md:w-auto px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-[#a7e5d3] transition-all text-sm md:text-base"
             >
               Open Studio Settings
             </button>
@@ -526,27 +538,27 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Pricing & Comparison Section */}
-      <section id="pricing" className="relative z-10 py-40 px-8 bg-black border-t border-white/5">
+      <section id="pricing" className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <div className="reveal inline-block px-4 py-1.5 mb-6 rounded-full border border-[#a7e5d3]/20 text-[11px] font-bold uppercase tracking-[0.2em] text-[#a7e5d3]">
+          <div className="text-center mb-16 md:mb-24">
+            <div className="reveal inline-block px-4 py-1.5 mb-4 md:mb-6 rounded-full border border-[#a7e5d3]/20 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#a7e5d3]">
               Transparency
             </div>
-            <h2 className="reveal text-4xl md:text-6xl font-light display-serif mb-8 leading-tight">Professional tools<br />shouldn't have a <span className="italic text-[#a7e5d3]">paywall.</span></h2>
+            <h2 className="reveal text-3xl md:text-6xl font-light display-serif mb-6 md:mb-8 leading-tight">Professional tools<br />shouldn't have a <span className="italic text-[#a7e5d3]">paywall.</span></h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Pricing Card */}
-            <div className="reveal p-12 border border-[#a7e5d3]/20 bg-gradient-to-br from-[#a7e5d3]/5 to-transparent rounded-3xl space-y-8">
-              <div className="flex justify-between items-start">
+            <div className="reveal p-8 md:p-12 border border-[#a7e5d3]/20 bg-gradient-to-br from-[#a7e5d3]/5 to-transparent rounded-3xl space-y-6 md:space-y-8">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                 <div>
-                  <h3 className="text-3xl font-medium text-white mb-2">Community Edition</h3>
-                  <p className="text-white/40">Free, Open Source, Forever.</p>
+                  <h3 className="text-2xl md:text-3xl font-medium text-white mb-2">Community Edition</h3>
+                  <p className="text-white/40 text-sm md:text-base">Free, Open Source, Forever.</p>
                 </div>
-                <span className="text-5xl font-light display-serif text-[#a7e5d3]">$0</span>
+                <span className="text-4xl md:text-5xl font-light display-serif text-[#a7e5d3]">$0</span>
               </div>
               
-              <ul className="space-y-4 pt-8 border-t border-white/5">
+              <ul className="space-y-4 pt-6 md:pt-8 border-t border-white/5">
                 {[
                   "Unlimited Component Generations",
                   "Full Design System Control",
@@ -555,7 +567,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
                   "All AI Providers (Gemini, Claude, GPT)",
                   "Local-First Data Storage"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-white/60">
+                  <li key={i} className="flex items-center gap-3 text-white/60 text-sm md:text-base">
                     <svg className="w-5 h-5 text-[#a7e5d3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                     {item}
                   </li>
@@ -612,10 +624,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Privacy Section */}
-      <section id="privacy" className="relative z-10 py-40 px-8 bg-black border-t border-white/5">
+      <section id="privacy" className="relative z-10 py-20 md:py-40 px-6 md:px-8 bg-black border-t border-white/5">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="reveal text-4xl md:text-5xl font-light display-serif mb-12 text-white leading-tight">Privacy is not a feature.<br />It's the foundation.</h2>
-          <div className="reveal text-left space-y-10 text-white/60 text-xl font-light leading-relaxed">
+          <h2 className="reveal text-3xl md:text-5xl font-light display-serif mb-8 md:mb-12 text-white leading-tight">Privacy is not a feature.<br />It's the foundation.</h2>
+          <div className="reveal text-left space-y-6 md:space-y-10 text-white/60 text-lg md:text-xl font-light leading-relaxed">
             <p>
               Open Component is a <strong>BYOK (Bring Your Own Key)</strong> application. We never see your API keys; they are stored locally in your browser's encrypted storage.
             </p>
@@ -630,17 +642,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-20 px-8 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
+      <footer className="relative z-10 py-12 md:py-20 px-6 md:px-8 border-t border-white/5 bg-black">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 md:gap-12 text-center md:text-left">
           <a href="#home" onClick={(e) => scrollToSection(e, 'home')} className="flex items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
-            <img src="/pwa-192x192.png" alt="Logo" className="h-6 w-6 invert grayscale" />
-            <span className="text-sm font-light display-serif">Open Component Studio</span>
+            <img src="/pwa-192x192.png" alt="Logo" className="h-5 w-5 md:h-6 md:w-6 invert grayscale" />
+            <span className="text-xs md:text-sm font-light display-serif">Open Component Studio</span>
           </a>
-          <div className="flex gap-8 text-sm text-white/20">
+          <div className="flex gap-6 md:gap-8 text-xs md:text-sm text-white/20">
             <a href="https://github.com/shresthkushwaha/Open-Component" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
             <a href="https://www.linkedin.com/in/shresth-kushwaha-b67660277" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
           </div>
-          <div className="text-[12px] text-white/20 text-right">
+          <div className="text-[10px] md:text-[12px] text-white/20 md:text-right">
             <div>© {new Date().getFullYear()} Open Component.</div>
             <div className="mt-1 font-medium text-white/40 tracking-wide uppercase">BYOK Architecture</div>
           </div>
