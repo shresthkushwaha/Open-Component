@@ -637,9 +637,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
             <span className="text-sm font-light display-serif">Open Component Studio</span>
           </a>
           <div className="flex gap-8 text-sm text-white/20">
-            <a href="#" className="hover:text-white">Twitter</a>
-            <a href="#" className="hover:text-white">GitHub</a>
-            <a href="#" className="hover:text-white">Docs</a>
+            <a href="https://github.com/shresthkushwaha/Open-Component" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+            <a href="https://www.linkedin.com/in/shresth-kushwaha-b67660277" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
           </div>
           <div className="text-[12px] text-white/20 text-right">
             <div>© {new Date().getFullYear()} Open Component.</div>
