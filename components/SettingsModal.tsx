@@ -7,6 +7,7 @@ interface SettingsModalProps {
   onClose: () => void;
   config: UserConfig;
   setConfig: (config: UserConfig) => void;
+  onViewGuide?: () => void;
 }
 
 const POPULAR_PROVIDERS = [
@@ -21,7 +22,7 @@ const POPULAR_PROVIDERS = [
   { id: 'cerebras', name: 'Cerebras' },
 ];
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, setConfig }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, setConfig, onViewGuide }) => {
   const [registry, setRegistry] = useState<ModelsRegistry>({});
   const [loading, setLoading] = useState(true);
   const [selectedRegProvider, setSelectedRegProvider] = useState<string>('google');
@@ -133,7 +134,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
           </section>
 
           <section className="space-y-6">
-            <h3 className="text-[11px] font-bold text-[var(--ink)] uppercase tracking-[0.1em]">Register New Provider</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-[11px] font-bold text-[var(--ink)] uppercase tracking-[0.1em]">Register New Provider</h3>
+              {onViewGuide && (
+                <button 
+                  onClick={onViewGuide}
+                  className="text-[10px] font-bold text-[#a7e5d3] hover:text-[var(--ink)] uppercase tracking-wider transition-colors flex items-center gap-1.5"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  Where do I get a key? View Guide
+                </button>
+              )}
+            </div>
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">

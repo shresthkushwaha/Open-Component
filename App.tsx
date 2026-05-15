@@ -667,6 +667,14 @@ const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         config={config}
         setConfig={setConfig}
+        onViewGuide={() => {
+          setIsSettingsOpen(false);
+          setView('landing');
+          setTimeout(() => {
+            const el = document.getElementById('guide');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        }}
       />
       {showTour && (
         <OnboardingTour 
