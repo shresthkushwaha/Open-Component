@@ -24,13 +24,24 @@ interface ImageAttachment {
 const App: React.FC = () => {
   // State: View
   const [view, setView] = useState<'landing' | 'studio'>(() => {
-    // Check if launched as PWA or via direct link
+    // Priority 1: Check URL for PWA flag
     const urlParams = new URLSearchParams(window.location.search);
     const isPwa = urlParams.get('pwa') === 'true' || 
                   window.matchMedia('(display-mode: standalone)').matches;
     
-    return isPwa ? 'studio' : 'landing';
+    if (isPwa) return 'studio';
+
+    // Priority 2: Check localStorage for persisted view
+    const savedView = localStorage.getItem('app_view') as 'landing' | 'studio';
+    if (savedView === 'landing' || savedView === 'studio') return savedView;
+    
+    return 'landing';
   });
+
+  // Persist view changes
+  useEffect(() => {
+    localStorage.setItem('app_view', view);
+  }, [view]);
 
   // State: Data
   const [files, setFiles] = useState<ComponentFile[]>([]);
