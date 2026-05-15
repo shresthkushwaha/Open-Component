@@ -75,6 +75,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
             }}
           >
             <ShaderGradient
+              control="props"
               animate="on"
               axesHelper="off"
               bgColor1="#000000"
@@ -100,9 +101,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
               positionX={0}
               positionY={0}
               positionZ={0}
-              range="disabled"
-              rangeEnd={40}
-              rangeStart={0}
               reflection={0.1}
               rotationX={50}
               rotationY={0}
