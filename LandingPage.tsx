@@ -161,7 +161,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
   return (
     <div ref={containerRef} className="min-h-screen bg-black text-white font-sans selection:bg-[#a7e5d3]/30">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-6 md:px-8 py-4 md:py-6 flex justify-between items-center bg-black/50 backdrop-blur-md md:bg-transparent border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 px-6 md:px-8 py-4 md:py-6 flex justify-between items-center bg-transparent border-b border-white/5">
         <a
           href="#home"
           onClick={(e) => scrollToSection(e, 'home')}
