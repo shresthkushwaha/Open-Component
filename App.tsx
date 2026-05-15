@@ -117,7 +117,21 @@ const App: React.FC = () => {
   // Load Initial Data
   useEffect(() => {
     const loadData = async () => {
-      const allFiles = await dbService.getAllFiles();
+      let allFiles = await dbService.getAllFiles();
+      
+      if (allFiles.length === 0) {
+        // Seed database if empty
+        const starterFile = getStarterFile();
+        const starterComponents = getStarterComponents();
+        
+        await dbService.saveFile(starterFile);
+        for (const comp of starterComponents) {
+          await dbService.saveComponent(comp);
+        }
+        
+        allFiles = [starterFile];
+      }
+
       setFiles(allFiles);
       if (allFiles.length > 0) {
         const currentId = localStorage.getItem('activeFileId');
