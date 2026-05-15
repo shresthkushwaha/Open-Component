@@ -87,7 +87,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
       });
 
       // Active Section Highlighting
-      const sections = ['home', 'features', 'workflow-section', 'guide', 'pricing', 'privacy'];
+      const sectionIds = ['home', 'features', 'workflow-section', 'guide', 'pricing', 'privacy'];
       const mapping: Record<string, string> = {
         'home': 'home',
         'features': 'features',
@@ -97,11 +97,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunch }) => {
         'privacy': 'privacy'
       };
 
-      sections.forEach((id, index) => {
+      sectionIds.forEach((id, index) => {
         ScrollTrigger.create({
           trigger: `#${id}`,
           start: index === 0 ? 'top top' : 'top 30%',
-          end: index === sections.length - 1 ? 'bottom bottom' : 'bottom 30%',
+          end: index === sectionIds.length - 1 ? 'bottom bottom' : 'bottom 30%',
           onToggle: (self) => {
             if (self.isActive) setActiveSection(mapping[id]);
           }

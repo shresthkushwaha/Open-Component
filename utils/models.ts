@@ -46,6 +46,25 @@ const FALLBACK_REGISTRY: ModelsRegistry = {
       'gpt-4-turbo': { id: 'gpt-4-turbo', name: 'GPT-4 Turbo' },
       'gpt-3.5-turbo': { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
     }
+  },
+  ollama: {
+    id: 'ollama',
+    name: 'Ollama (Local)',
+    api: 'http://localhost:11434/v1',
+    models: {
+      'llama3': { id: 'llama3', name: 'Llama 3' },
+      'mistral': { id: 'mistral', name: 'Mistral' },
+      'gemma': { id: 'gemma', name: 'Gemma' },
+      'phi3': { id: 'phi3', name: 'Phi-3' },
+    }
+  },
+  lmstudio: {
+    id: 'lmstudio',
+    name: 'LM Studio (Local)',
+    api: 'http://localhost:1234/v1',
+    models: {
+      'local-model': { id: 'local-model', name: 'Currently Loaded Model' },
+    }
   }
 };
 

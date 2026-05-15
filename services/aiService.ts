@@ -191,6 +191,8 @@ export const getModel = (aiConfig: AIProviderConfig) => {
      provider === 'mistral' ? 'https://api.mistral.ai/v1' :
      provider === 'groq' ? 'https://api.groq.com/openai/v1' :
      provider === 'perplexity' ? 'https://api.perplexity.ai' :
+     provider === 'ollama' ? 'http://localhost:11434/v1' :
+     provider === 'lmstudio' ? 'http://localhost:1234/v1' :
      undefined);
 
   const openai = createOpenAI({
