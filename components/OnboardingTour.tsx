@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Step {
@@ -61,44 +61,49 @@ interface Props {
 const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [realPosition, setRealPosition] = useState<'top' | 'bottom' | 'left' | 'right' | 'center'>('center');
   const step = STEPS[currentStep];
-  const [realPosition, setRealPosition] = useState(step.position);
+
+  const updateLayout = useCallback(() => {
+    const el = document.getElementById(step.targetId);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const newCoords = {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height
+      };
+      setCoords(newCoords);
+
+      // Smart positioning / collision detection
+      let pos = step.position;
+      if (pos === 'top' && rect.top < 300) pos = 'bottom';
+      if (pos === 'bottom' && (window.innerHeight - rect.bottom) < 300) pos = 'top';
+      if (pos === 'left' && rect.left < 340) pos = 'right';
+      if (pos === 'right' && (window.innerWidth - rect.right) < 340) pos = 'left';
+      
+      setRealPosition(pos);
+    } else if (step.position === 'center') {
+      setCoords({
+        top: window.innerHeight / 2,
+        left: window.innerWidth / 2,
+        width: 0,
+        height: 0
+      });
+      setRealPosition('center');
+    }
+  }, [step]);
 
   useLayoutEffect(() => {
-    const updateCoords = () => {
-      const el = document.getElementById(step.targetId);
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        setCoords({
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height
-        });
-
-        // Collision detection
-        if (step.position === 'top' && rect.top < 280) {
-          setRealPosition('bottom');
-        } else if (step.position === 'bottom' && (window.innerHeight - rect.bottom) < 280) {
-          setRealPosition('top');
-        } else {
-          setRealPosition(step.position);
-        }
-      } else if (step.position === 'center') {
-        setCoords({
-          top: window.innerHeight / 2,
-          left: window.innerWidth / 2,
-          width: 0,
-          height: 0
-        });
-        setRealPosition('center');
-      }
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    window.addEventListener('scroll', updateLayout, true);
+    return () => {
+      window.removeEventListener('resize', updateLayout);
+      window.removeEventListener('scroll', updateLayout, true);
     };
-
-    updateCoords();
-    window.addEventListener('resize', updateCoords);
-    return () => window.removeEventListener('resize', updateCoords);
-  }, [currentStep, step]);
+  }, [updateLayout]);
 
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
@@ -114,26 +119,82 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
     }
   };
 
-  // Helper to get safe left position
-  const getSafeLeft = () => {
-    if (realPosition === 'center') return '50%';
-    let left = 0;
-    if (realPosition === 'right') left = coords.left + coords.width + 20;
-    else if (realPosition === 'left') left = coords.left - 340;
-    else left = coords.left + coords.width / 2;
+  const getStyle = () => {
+    const isCenter = realPosition === 'center';
+    const tooltipWidth = 320;
+    const padding = 24;
 
-    // Constrain to viewport
-    const minPadding = 20;
-    if (left < minPadding) return `${minPadding}px`;
-    if (left > window.innerWidth - 340) return `${window.innerWidth - 340}px`;
-    return `${left}px`;
+    if (isCenter) {
+      return {
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        opacity: 1
+      };
+    }
+
+    let top = 0;
+    let left = 0;
+    let transform = '';
+
+    switch (realPosition) {
+      case 'top':
+        top = coords.top - padding;
+        left = coords.left + coords.width / 2;
+        transform = 'translate(-50%, -100%)';
+        break;
+      case 'bottom':
+        top = coords.top + coords.height + padding;
+        left = coords.left + coords.width / 2;
+        transform = 'translate(-50%, 0)';
+        break;
+      case 'left':
+        top = coords.top + coords.height / 2;
+        left = coords.left - padding;
+        transform = 'translate(-100%, -50%)';
+        break;
+      case 'right':
+        top = coords.top + coords.height / 2;
+        left = coords.left + coords.width + padding;
+        transform = 'translate(0, -50%)';
+        break;
+    }
+
+    // Horizontal containment
+    const minLeft = tooltipWidth / 2 + 20;
+    const maxLeft = window.innerWidth - tooltipWidth / 2 - 20;
+    
+    // For top/bottom, adjust transform if left is constrained
+    if (realPosition === 'top' || realPosition === 'bottom') {
+       if (left < minLeft) left = minLeft;
+       if (left > maxLeft) left = maxLeft;
+    }
+
+    return {
+      top: `${top}px`,
+      left: `${left}px`,
+      transform,
+      opacity: coords.width > 0 ? 1 : 0,
+      transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)'
+    };
+  };
+
+  const arrowStyle = () => {
+    const size = 10;
+    switch (realPosition) {
+      case 'top': return { bottom: -size/2, left: '50%', transform: 'translateX(-50%) rotate(45deg)', borderRight: '1px solid var(--hairline-strong)', borderBottom: '1px solid var(--hairline-strong)' };
+      case 'bottom': return { top: -size/2, left: '50%', transform: 'translateX(-50%) rotate(45deg)', borderLeft: '1px solid var(--hairline-strong)', borderTop: '1px solid var(--hairline-strong)' };
+      case 'left': return { right: -size/2, top: '50%', transform: 'translateY(-50%) rotate(45deg)', borderRight: '1px solid var(--hairline-strong)', borderTop: '1px solid var(--hairline-strong)' };
+      case 'right': return { left: -size/2, top: '50%', transform: 'translateY(-50%) rotate(45deg)', borderLeft: '1px solid var(--hairline-strong)', borderBottom: '1px solid var(--hairline-strong)' };
+      default: return { display: 'none' };
+    }
   };
 
   return createPortal(
     <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden inter-ui">
       {/* Dimmed Overlay with Hole */}
       <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-all duration-500 pointer-events-auto"
+        className="absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-all duration-500 pointer-events-auto"
         style={{
           clipPath: step.position === 'center' 
             ? 'none' 
@@ -144,18 +205,13 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
 
       {/* Tooltip Card */}
       <div 
-        className="absolute bg-white dark:bg-[#111] border border-[var(--hairline-strong)] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] p-6 w-[320px] max-w-[calc(100vw-40px)] transition-all duration-500 pointer-events-auto flex flex-col gap-4"
-        style={{
-          top: realPosition === 'center' ? '50%' : (realPosition === 'bottom' ? coords.top + coords.height + 20 : (realPosition === 'top' ? coords.top - 20 : coords.top + coords.height/2)),
-          left: getSafeLeft(),
-          transform: realPosition === 'center' ? 'translate(-50%, -50%)' : (realPosition === 'top' ? 'translate(-50%, -100%)' : (realPosition === 'bottom' ? 'translate(-50%, 0)' : (realPosition === 'left' ? 'translate(0, -50%)' : 'translate(0, -50%)'))),
-          opacity: coords.width || step.position === 'center' ? 1 : 0
-        }}
+        className="absolute bg-white dark:bg-[#111] border border-[var(--hairline-strong)] rounded-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] p-6 w-[320px] max-w-[calc(100vw-40px)] pointer-events-auto flex flex-col gap-4"
+        style={getStyle() as any}
       >
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-widest opacity-60">Step {currentStep + 1} of {STEPS.length}</span>
-            <button onClick={onComplete} className="text-[var(--muted)] hover:text-[var(--ink)]">
+            <button onClick={onComplete} className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>
@@ -192,16 +248,8 @@ const OnboardingTour: React.FC<Props> = ({ onComplete }) => {
 
         {/* Pointer Arrow */}
         <div 
-          className="absolute w-4 h-4 bg-white dark:bg-[#111] border-l border-t border-[var(--hairline-strong)] rotate-45"
-          style={{
-            display: realPosition === 'center' ? 'none' : 'block',
-            top: realPosition === 'bottom' ? '-8px' : (realPosition === 'top' ? 'auto' : '50%'),
-            bottom: realPosition === 'top' ? '-8px' : 'auto',
-            left: realPosition === 'right' ? '-8px' : (realPosition === 'left' ? 'auto' : '50%'),
-            right: realPosition === 'left' ? '-8px' : 'auto',
-            marginTop: (realPosition === 'left' || realPosition === 'right') ? '-8px' : 0,
-            marginLeft: (realPosition === 'top' || realPosition === 'bottom') ? '-8px' : 0
-          }}
+          className="absolute w-2.5 h-2.5 bg-white dark:bg-[#111]"
+          style={arrowStyle() as any}
         />
       </div>
     </div>,
