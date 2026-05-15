@@ -428,22 +428,30 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white transition-colors duration-300 font-sans selection:bg-black/10 dark:selection:bg-white/20">
       
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-30"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      
       {/* Sidebar */}
       <aside 
         id="sidebar-container"
-        className={`${isSidebarOpen ? 'w-80' : 'w-0'} border-r border-[var(--hairline)] transition-all duration-300 overflow-hidden flex flex-col bg-[var(--canvas-soft)] z-20`}
+        className={`fixed md:relative top-0 left-0 h-full ${isSidebarOpen ? 'w-[85vw] md:w-80' : 'w-0'} border-r border-[var(--hairline)] transition-all duration-300 overflow-hidden flex flex-col bg-[var(--canvas-soft)] z-40 md:z-20`}
       >
-        <div className="p-8 flex items-center justify-between">
+        <div className="p-6 md:p-8 flex items-center justify-between">
           <button 
             onClick={() => setView('landing')}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <img src={logo} alt="Logo" className="w-8 h-8 theme-logo" />
-            <h1 className="text-[20px] font-medium display-serif tracking-tight text-[var(--ink)]">Open Component</h1>
+            <h1 className="text-[18px] md:text-[20px] font-medium display-serif tracking-tight text-[var(--ink)]">Open Component</h1>
           </button>
           <button 
             onClick={() => setIsSidebarOpen(false)}
-            className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
+            className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors p-2"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="11 17 6 12 11 7" /><polyline points="18 17 13 12 18 7" /></svg>
           </button>
@@ -528,18 +536,24 @@ const App: React.FC = () => {
         </div>
 
         {/* Top Header (Subtle) */}
-        <header className="h-16 flex items-center justify-between px-8 z-10">
+        <header className="h-16 flex items-center justify-between px-4 md:px-8 z-10">
           <div className="flex items-center gap-4">
-            {!isSidebarOpen && (
-              <button 
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-1 hover:bg-black/5 rounded-lg transition-all active:scale-95"
-              >
-                <img src={logo} alt="Logo" className="w-8 h-8 theme-logo" />
-              </button>
-            )}
+            <button 
+              id="mobile-sidebar-toggle"
+              onClick={() => setIsSidebarOpen(true)}
+              className={`md:hidden p-1.5 text-[var(--muted)] hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-all ${isSidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+              title="Open Menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className={`hidden md:block p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-all active:scale-95 ${isSidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+            >
+              <img src={logo} alt="Logo" className="w-8 h-8 theme-logo" />
+            </button>
             <div className="flex items-center gap-3">
-              <h2 className="text-[20px] font-medium display-serif text-[var(--ink)]">
+              <h2 className="text-[16px] md:text-[20px] font-medium display-serif text-[var(--ink)] truncate max-w-[150px] md:max-w-none">
                 {activeFile?.name || 'Open Component'}
               </h2>
               {activeFile && activeFile.type === 'suite' && activeFile.designSystem && (
@@ -571,8 +585,8 @@ const App: React.FC = () => {
         {/* Studio Canvas */}
         <div className="flex-1 overflow-hidden flex flex-col relative">
           {activeFile ? (
-            <div className="flex-1 overflow-y-auto px-12 py-12 custom-scrollbar">
-              <div className="max-w-7xl mx-auto space-y-16 pb-48">
+            <div className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-12 custom-scrollbar">
+              <div className="max-w-7xl mx-auto space-y-12 md:space-y-16 pb-48">
                 {components.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in">
                     <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-[var(--muted)] opacity-80">Ready to Compose</h3>
@@ -616,8 +630,8 @@ const App: React.FC = () => {
           )}
 
           {activeFile && (
-            <div id="prompt-input-container" className="absolute bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
-              <div className="bg-white dark:bg-[#0c0c0c] border border-[var(--hairline-strong)] rounded-full p-1.5 flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] group transition-all duration-300 focus-within:shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
+            <div id="prompt-input-container" className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 md:px-6 z-20">
+              <div className="bg-white dark:bg-[#0c0c0c] border border-[var(--hairline-strong)] rounded-full p-1 md:p-1.5 flex items-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] group transition-all duration-300 focus-within:shadow-[0_25px_60px_rgba(0,0,0,0.15)]">
                 <label className="p-3.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.03] rounded-full cursor-pointer transition-colors text-[var(--muted)] hover:text-[var(--ink)]">
                   <ImageIcon />
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />

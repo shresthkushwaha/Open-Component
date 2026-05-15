@@ -60,9 +60,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
   const modelsForNewKey = formatModelsForProvider(registry, selectedRegProvider);
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-500 inter-ui">
-      <div className="bg-[var(--surface-card)] rounded-[32px] w-full max-w-2xl shadow-[var(--modal-shadow)] border border-[var(--hairline)] overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
-        <header className="px-8 py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-end md:items-center justify-center md:p-6 animate-in fade-in duration-500 inter-ui">
+      <div className="bg-[var(--surface-card)] rounded-t-[32px] md:rounded-[32px] w-full max-w-2xl shadow-[var(--modal-shadow)] border-t md:border border-[var(--hairline)] overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-500 flex flex-col h-[90vh] md:max-h-[90vh]">
+        <header className="px-6 md:px-8 py-5 md:py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
           <div>
             <h2 className="text-2xl font-light display-serif text-[var(--ink)]">API Configuration</h2>
             <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-[0.1em] mt-1">
@@ -80,8 +80,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
             <h3 className="text-[11px] font-bold text-[var(--ink)] uppercase tracking-[0.1em]">Active Credentials</h3>
             <div className="space-y-4">
               {config.keys.map(key => (
-                <div key={key.id} className="p-6 border border-[var(--hairline)] rounded-2xl bg-[var(--canvas-soft)] group transition-all">
-                  <div className="flex items-center justify-between mb-4">
+                <div key={key.id} className="p-5 md:p-6 border border-[var(--hairline)] rounded-2xl bg-[var(--canvas-soft)] group transition-all">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                     <div className="flex items-center gap-3">
                       <span className="text-[13px] font-bold text-[var(--ink)] uppercase tracking-wide">{getProviderName(key.provider)}</span>
                       {config.activeKeyId === key.id && (
@@ -92,20 +92,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
                       <button 
                         onClick={() => setConfig({ ...config, activeKeyId: key.id })}
                         disabled={config.activeKeyId === key.id}
-                        className={`px-4 py-1.5 rounded-full text-[10px] font-bold transition-all ${config.activeKeyId === key.id ? 'bg-[var(--ink)] text-[var(--canvas)]' : 'bg-[var(--surface-card)] border border-[var(--hairline)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--canvas)] shadow-sm'}`}
+                        className={`flex-1 sm:flex-none px-4 py-1.5 rounded-full text-[10px] font-bold transition-all ${config.activeKeyId === key.id ? 'bg-[var(--ink)] text-[var(--canvas)]' : 'bg-[var(--surface-card)] border border-[var(--hairline)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--canvas)] shadow-sm'}`}
                       >
                         {config.activeKeyId === key.id ? 'In Use' : 'Use This'}
                       </button>
                       <button 
                         onClick={() => setConfig({ ...config, keys: config.keys.filter(k => k.id !== key.id), activeKeyId: config.activeKeyId === key.id ? null : config.activeKeyId })}
-                        className="px-4 py-1.5 rounded-full text-[10px] font-bold bg-[var(--surface-card)] border border-[var(--hairline)] text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                        className="flex-1 sm:flex-none px-4 py-1.5 rounded-full text-[10px] font-bold bg-[var(--surface-card)] border border-[var(--hairline)] text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm"
                       >
                         Remove
                       </button>
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--hairline)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[var(--hairline)]">
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-bold text-[var(--muted)] uppercase tracking-wider">API Key</label>
                       <div className="text-[11px] font-mono text-[var(--muted)] opacity-60">••••••••{key.value.slice(-4)}</div>
@@ -156,7 +156,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
 
             <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
               {/* Common Provider/Model Row */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-3">
                   <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">Provider</label>
                   <div className="relative">
@@ -276,10 +276,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, config, 
           
         </div>
 
-        <footer className="px-8 py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex justify-end shrink-0">
+        <footer className="px-6 md:px-8 py-5 md:py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex justify-end shrink-0">
           <button 
             onClick={onClose} 
-            className="px-8 py-3 rounded-full text-[13px] font-medium bg-[var(--ink)] text-[var(--canvas)] shadow-sm hover:opacity-90 transition-all"
+            className="w-full sm:w-auto px-8 py-3 rounded-full text-[13px] font-medium bg-[var(--ink)] text-[var(--canvas)] shadow-sm hover:opacity-90 transition-all"
           >
             Dismiss Settings
           </button>

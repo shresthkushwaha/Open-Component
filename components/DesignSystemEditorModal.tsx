@@ -130,23 +130,23 @@ const DesignSystemEditorModal: React.FC<DesignSystemEditorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-500 inter-ui">
-      <div className="bg-[var(--surface-card)] rounded-[32px] w-full max-w-2xl shadow-[var(--modal-shadow)] border border-[var(--hairline)] overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
-        <header className="px-8 py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
+    <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-[100] flex items-end md:items-center justify-center md:p-6 animate-in fade-in duration-500 inter-ui">
+      <div className="bg-[var(--surface-card)] rounded-t-[32px] md:rounded-[32px] w-full max-w-2xl shadow-[var(--modal-shadow)] border-t md:border border-[var(--hairline)] overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-500 flex flex-col h-[90vh] md:max-h-[90vh]">
+        <header className="px-6 md:px-8 py-5 md:py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
           <div>
             <h2 className="text-2xl font-light display-serif text-[var(--ink)]">Design System</h2>
-            <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-[0.1em] mt-1">{formData.name}</p>
+            <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-[0.1em] mt-1 truncate max-w-[200px]">{formData.name}</p>
           </div>
-          <button onClick={onClose} disabled={isSaving} className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50">
+          <button onClick={onClose} disabled={isSaving} className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50 p-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         </header>
 
-        <div className="p-8 overflow-y-auto space-y-10 custom-scrollbar">
+        <div className="p-6 md:p-8 overflow-y-auto space-y-10 custom-scrollbar">
           
           <section className="space-y-6">
             <h3 className="text-[11px] font-bold text-[var(--ink)] uppercase tracking-[0.1em]">Foundational Colors</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
               {['primaryColor', 'surfaceColor', 'textColor'].map((field) => (
                 <div key={field} className="space-y-3">
                   <label className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider">{field.replace('Color', '')}</label>
@@ -233,18 +233,18 @@ const DesignSystemEditorModal: React.FC<DesignSystemEditorModalProps> = ({
           
         </div>
 
-        <footer className="px-8 py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex justify-end gap-4 shrink-0">
+        <footer className="px-6 md:px-8 py-5 md:py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex justify-end gap-3 md:gap-4 shrink-0">
           <button 
             onClick={onClose} 
             disabled={isSaving}
-            className="px-6 py-3 rounded-full text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50"
+            className="px-4 md:px-6 py-2.5 md:py-3 rounded-full text-[12px] md:text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button 
             onClick={handleSave}
             disabled={isSaving}
-            className="px-8 py-3 rounded-full text-[13px] font-medium bg-[var(--ink)] text-white shadow-sm hover:opacity-90 transition-all disabled:opacity-20 flex items-center gap-3"
+            className="flex-1 sm:flex-none px-6 md:px-8 py-2.5 md:py-3 rounded-full text-[12px] md:text-[13px] font-medium bg-[var(--ink)] text-white shadow-sm hover:opacity-90 transition-all disabled:opacity-20 flex items-center justify-center gap-3"
           >
             {isSaving ? (
               <>

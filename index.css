@@ -92,12 +92,32 @@ button:active:not(:disabled) {
   66% { transform: translate(-20px, 20px); }
 }
 
+:root {
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
 .animate-in {
   animation: fade-in 0.5s var(--ease-out-expo) forwards;
 }
 
 .animate-slide-up {
   animation: slide-up 0.6s var(--ease-out-expo) forwards;
+}
+
+/* Base Responsive Typography */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Atmospheric Background */

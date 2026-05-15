@@ -102,8 +102,13 @@ const InteractionPreview: React.FC<InteractionPreviewProps> = ({
             display: flex; 
             align-items: center; 
             justify-content: center;
-            padding: 40px; /* Give some breathing room */
+            padding: 40px; 
             box-sizing: border-box;
+          }
+          @media (max-width: 640px) {
+            #interaction-root {
+              padding: 20px;
+            }
           }
           ${interaction.css}
         </style>

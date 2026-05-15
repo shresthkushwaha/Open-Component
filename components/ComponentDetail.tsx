@@ -22,7 +22,7 @@ const ComponentDetail: React.FC<ComponentDetailProps> = ({
   onRegenerate,
   isGenerating
 }) => {
-  const [viewMode, setViewMode] = useState<'preview' | 'html' | 'css' | 'js'>('preview');
+  const [viewMode, setViewMode] = useState<'preview' | 'html' | 'css' | 'js' | 'edit'>('preview');
   const [refinementPrompt, setRefinementPrompt] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -119,23 +119,25 @@ ${Object.keys(contentTweaks).length > 0 ? `
         <div className="orb orb-peach" />
       </div>
 
-      <header className="h-16 border-b border-[var(--hairline)] flex items-center justify-between px-8 bg-[var(--canvas)] shrink-0 z-10">
-        <div className="flex items-center gap-6">
-          <button onClick={onClose} className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors">
+      <header className="h-16 md:h-20 border-b border-[var(--hairline)] flex items-center justify-between px-4 md:px-8 bg-[var(--canvas)] shrink-0 z-10">
+        <div className="flex items-center gap-4 md:gap-6">
+          <button onClick={onClose} className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors p-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
-          <div>
-            <h2 className="text-xl font-light display-serif text-[var(--ink)] leading-tight">{component.name}</h2>
-            <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-[0.1em]">{designSystem.name}</p>
+          <div className="hidden sm:block">
+            <h2 className="text-lg md:text-xl font-light display-serif text-[var(--ink)] leading-tight truncate max-w-[120px] md:max-w-none">{component.name}</h2>
+            <p className="text-[9px] md:text-[10px] font-semibold text-[var(--muted)] uppercase tracking-[0.1em]">{designSystem.name}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-[var(--surface-strong)] p-1 rounded-full border border-[var(--hairline)]">
-          {['preview', 'html', 'css', 'js'].map(mode => (
+        <div className="flex items-center gap-1 bg-[var(--surface-strong)] p-1 rounded-full border border-[var(--hairline)] overflow-x-auto no-scrollbar max-w-[50vw] sm:max-w-none">
+          {['preview', 'html', 'css', 'js', 'edit'].map(mode => (
             <button
               key={mode}
               onClick={() => setViewMode(mode as any)}
-              className={`px-5 py-1.5 text-[11px] font-semibold rounded-full transition-all ${viewMode === mode ? 'bg-[var(--surface-card)] shadow-sm text-[var(--ink)] border border-[var(--hairline)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'}`}
+              className={`px-3 md:px-5 py-1.5 text-[10px] md:text-[11px] font-semibold rounded-full transition-all whitespace-nowrap ${
+                mode === 'edit' ? 'md:hidden' : ''
+              } ${viewMode === mode ? 'bg-[var(--surface-card)] shadow-sm text-[var(--ink)] border border-[var(--hairline)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'}`}
             >
               {mode.toUpperCase()}
             </button>
@@ -144,29 +146,24 @@ ${Object.keys(contentTweaks).length > 0 ? `
 
         <button 
           onClick={handleCopyCode}
-          className={`px-6 py-2 rounded-full text-[13px] font-medium shadow-sm transition-all flex items-center gap-2 ${
+          className={`px-4 md:px-6 py-2 rounded-full text-[12px] md:text-[13px] font-medium shadow-sm transition-all flex items-center gap-2 ${
             copied ? 'bg-green-500 text-white' : 'bg-black dark:bg-white text-white dark:text-black hover:opacity-90'
           }`}
         >
           {copied ? (
-            <>
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Copied!
-            </>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
           ) : (
-            <>
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Export
-            </>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
           )}
+          <span className="hidden sm:inline">{copied ? 'Copied!' : 'Export'}</span>
         </button>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto relative p-8 lg:p-12">
+        <div className={`flex-1 overflow-y-auto relative p-4 md:p-8 lg:p-12 ${viewMode === 'edit' ? 'hidden md:block' : 'block'}`}>
           {viewMode === 'preview' ? (
-            <div className="h-full w-full rounded-[40px] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.06)] border border-[var(--hairline)] bg-[var(--canvas-soft)] relative">
+            <div className="h-full w-full rounded-3xl md:rounded-[40px] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.06)] border border-[var(--hairline)] bg-[var(--canvas-soft)] relative">
               <InteractionPreview interaction={component} designSystem={designSystem} activeTweaks={activeTweaks} />
               {isGenerating && (
                 <div className="absolute inset-0 bg-[var(--canvas)]/40 backdrop-blur-md flex items-center justify-center z-50 animate-in fade-in">
@@ -177,6 +174,8 @@ ${Object.keys(contentTweaks).length > 0 ? `
                 </div>
               )}
             </div>
+          ) : viewMode === 'edit' ? (
+            null // Handled by aside below on mobile
           ) : (
             <div className="max-w-4xl mx-auto h-full animate-in fade-in slide-in-from-bottom-4">
               <CodeBlock 
@@ -188,8 +187,8 @@ ${Object.keys(contentTweaks).length > 0 ? `
         </div>
 
         {/* Inspector Sidebar */}
-        <aside className="w-80 bg-[var(--canvas)] border-l border-[var(--hairline)] flex flex-col shrink-0 overflow-y-auto">
-          <div className="p-8 space-y-12">
+        <aside className={`${viewMode === 'edit' ? 'flex' : 'hidden md:flex'} w-full md:w-80 bg-[var(--canvas)] border-l border-[var(--hairline)] flex-col shrink-0 overflow-y-auto`}>
+          <div className="p-6 md:p-8 space-y-10 md:space-y-12">
             
             {/* Context/Prompt */}
             <section className="space-y-4">

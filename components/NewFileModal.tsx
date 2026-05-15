@@ -30,9 +30,9 @@ const NewFileModal: React.FC<NewFileModalProps> = ({ isOpen, onClose, onGenerate
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-500 inter-ui">
-      <div className="bg-[var(--surface-card)] rounded-[32px] w-full max-w-xl shadow-[var(--modal-shadow)] border border-[var(--hairline)] overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col">
-        <header className="px-8 py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-end md:items-center justify-center md:p-6 animate-in fade-in duration-500 inter-ui">
+      <div className="bg-[var(--surface-card)] rounded-t-[32px] md:rounded-[32px] w-full max-w-xl shadow-[var(--modal-shadow)] border-t md:border border-[var(--hairline)] overflow-hidden animate-in slide-in-from-bottom md:zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
+        <header className="px-6 md:px-8 py-5 md:py-6 border-b border-[var(--hairline)] flex justify-between items-center bg-[var(--canvas)] shrink-0">
           <h2 className="text-2xl font-light display-serif text-[var(--ink)]">
             {type === 'suite' ? 'Configure Component Set' : 'New Creation'}
           </h2>
@@ -45,11 +45,11 @@ const NewFileModal: React.FC<NewFileModalProps> = ({ isOpen, onClose, onGenerate
           {!type ? (
             <div className="space-y-6">
               <p className="text-[13px] text-[var(--muted)] text-center">Select the scope of your new project</p>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 <button 
                   onClick={() => handleSelectType('atomic')}
                   disabled={isGenerating}
-                  className="p-8 rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas-soft)] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--surface-card)] hover:shadow-xl transition-all group text-left flex flex-col items-start"
+                  className="p-6 md:p-8 rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas-soft)] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--surface-card)] hover:shadow-xl transition-all group text-left flex flex-col items-start"
                 >
                   <div className="w-12 h-12 rounded-2xl mb-6 flex items-center justify-center bg-[var(--surface-strong)] group-hover:bg-[var(--ink)] group-hover:text-[var(--canvas)] transition-colors">
                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v1m0 14v1m8-8h1M3 12h1m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -61,7 +61,7 @@ const NewFileModal: React.FC<NewFileModalProps> = ({ isOpen, onClose, onGenerate
                 <button 
                   onClick={() => handleSelectType('suite')}
                   disabled={isGenerating}
-                  className="p-8 rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas-soft)] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--surface-card)] hover:shadow-xl transition-all group text-left flex flex-col items-start"
+                  className="p-6 md:p-8 rounded-[24px] border border-[var(--hairline)] bg-[var(--canvas-soft)] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--surface-card)] hover:shadow-xl transition-all group text-left flex flex-col items-start"
                 >
                   <div className="w-12 h-12 rounded-2xl mb-6 flex items-center justify-center bg-[var(--surface-strong)] group-hover:bg-[var(--ink)] group-hover:text-[var(--canvas)] transition-colors">
                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" strokeWidth="2"/></svg>
@@ -118,25 +118,25 @@ const NewFileModal: React.FC<NewFileModalProps> = ({ isOpen, onClose, onGenerate
         </div>
 
         {type && (
-          <footer className="px-8 py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex justify-end gap-4 shrink-0">
+          <footer className="px-6 md:px-8 py-5 md:py-6 border-t border-[var(--hairline)] bg-[var(--canvas)] flex flex-wrap justify-end gap-3 md:gap-4 shrink-0">
             <button 
               onClick={() => setType(null)} 
               disabled={isGenerating}
-              className="px-6 py-3 rounded-full text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50 mr-auto"
+              className="px-4 md:px-6 py-2.5 md:py-3 rounded-full text-[12px] md:text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50 mr-auto order-1"
             >
               Back
             </button>
             <button 
               onClick={onClose} 
               disabled={isGenerating}
-              className="px-6 py-3 rounded-full text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50"
+              className="px-4 md:px-6 py-2.5 md:py-3 rounded-full text-[12px] md:text-[13px] font-medium text-[var(--muted)] hover:text-[var(--ink)] transition-colors disabled:opacity-50 order-2 sm:order-2"
             >
               Cancel
             </button>
             <button 
               onClick={() => onGenerate(name, description, 'suite')}
               disabled={!name.trim() || !description.trim() || isGenerating}
-              className="px-8 py-3 rounded-full text-[13px] font-medium bg-[var(--ink)] text-[var(--canvas)] shadow-sm hover:opacity-90 transition-all disabled:opacity-20 flex items-center gap-3"
+              className="w-full sm:w-auto px-6 md:px-8 py-2.5 md:py-3 rounded-full text-[12px] md:text-[13px] font-medium bg-[var(--ink)] text-[var(--canvas)] shadow-sm hover:opacity-90 transition-all disabled:opacity-20 flex items-center justify-center gap-3 order-3 sm:order-3"
             >
               {isGenerating ? (
                 <>
